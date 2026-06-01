@@ -12,6 +12,14 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    ".agents/**",
+    ".claude/**",
+    ".cursor/**",
+    ".gemini/**",
+    ".kiro/**",
+    ".opencode/**",
+    // shadcn/ui registry components (auto-generated)
+    "components/ui/**",
   ]),
 ]);
 

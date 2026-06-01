@@ -1,0 +1,340 @@
+{
+  "perfil_profesional": {
+    "nombre": "Stephan Barker",
+    "titulo_principal": "DESARROLLADOR FULL STACK & ASESOR DIGITAL",
+    "resumen_perfil": "Desarrollador full stack con experiencia en Next.js, Supabase y React Native. Especialista en crear plataformas SaaS, APIs robustas y aplicaciones móviles que resuelven problemas reales de negocio.",
+    "descripcion_hero": "Más de 8 años transformando ideas en productos digitales. Desarrolo plataformas web escalables con Next.js y Supabase, creo APIs seguras y construyo apps móviles con React Native. También trabajo con WordPress & WooCommerce cuando la situación lo requiere.",
+    "filosofia_trabajo": "Creo en la simplicidad y la eficiencia. Cada proyecto que desarrollo busca resolver problemas reales con soluciones elegantes y escalables. Me apasiona encontrar el equilibrio perfecto entre la velocidad del desarrollo y la calidad del código.",
+    "valores": [
+      "Transparencia en cada etapa del proyecto",
+      "Comunicación clara y constante",
+      "Código limpio y mantenible",
+      "Soluciones escalables desde el día uno",
+      "Aprendizaje continuo y adaptación"
+    ],
+    "enfoque": "Me especializo en ayudar a empresas a hacer la transición de sitios web estáticos a aplicaciones web modernas y funcionales. Trabajo tanto con startups que necesitan MVP rápidos como con empresas establecidas que buscan modernizar su infraestructura digital.",
+    "logros_destacados": [
+      "Desarrollé Tu Menú Digital, una plataforma completa que ayuda a restaurantes a digitalizar sus operaciones",
+      "Creé pateperro.online, plataforma todo-en-uno para publicación y venta de eventos con apps móviles en desarrollo",
+      "Implementé sistemas de pago integrados que procesan transacciones de forma segura y eficiente",
+      "Lideré la transformación digital de múltiples empresas, aumentando su eficiencia operativa en más del 40%"
+    ],
+    "enlaces": {
+      "github": "https://github.com/sbarkerzamora",
+      "portfolio": "https://stephanbarker.com",
+      "cv": "/api/cv",
+      "email": "sbarkerzamora@gmail.com"
+    },
+    "navegacion": [
+      "Inicio"
+    ]
+  },
+  "hero_proyectos_recientes": [
+    {
+      "nombre": "Justo",
+      "descripcion": "Tu Asistente Laboral Inteligente",
+      "icono": "/icons/justo-icon.webp",
+      "stack": ["Next.js", "Redis", "Vercel", "Opencode", "OpenAI"],
+      "enlace": "https://justo.stephanbarker.com"
+    },
+    {
+      "nombre": "Pateperro",
+      "descripcion": "Android APP",
+      "icono": "/icons/pateperro-icon.webp",
+      "stack": ["Expo", "React Native"],
+      "enlace": "http://pateperro.online/app",
+      "tipo": "playstore"
+    },
+    {
+      "nombre": "Tu Menú Digital",
+      "descripcion": "Plataforma de sistema de gestión integral para restaurantes",
+      "icono": "/icons/tu-menu-digital-icon.webp",
+      "stack": ["Laravel", "Dokploy", "Hostinger", "Cloudflare", "Brevo"],
+      "enlace": "https://tumenudigital.app"
+    },
+    {
+      "nombre": "pateperro.online",
+      "descripcion": "Backend/API + Frontend",
+      "icono": "/icons/pateperro-icon.webp",
+      "stack": ["Next.js", "Supabase", "Vercel", "Vite", "Stripe"],
+      "enlace": "https://pateperro.online"
+    }
+  ],
+  "stack_categorias": [
+    {
+      "nombre": "Web App",
+      "descripcion": "Aplicaciones web modernas y escalables",
+      "tecnologias": ["Next.js", "React", "TypeScript", "JavaScript", "Vite", "WordPress"]
+    },
+    {
+      "nombre": "Backend / API",
+      "descripcion": "Servidores, bases de datos y APIs RESTful",
+      "tecnologias": ["Supabase", "Node.js", "Docker", "Linux", "Nginx", "Redis", "Vercel"]
+    },
+    {
+      "nombre": "Android App",
+      "descripcion": "Aplicaciones móviles nativas",
+      "tecnologias": ["React Native"]
+    },
+    {
+      "nombre": "Product Manager Digital",
+      "descripcion": "Pagos, herramientas y flujo de trabajo",
+      "tecnologias": ["Stripe", "PayPal", "GitHub", "Cursor", "Opencode", "VS Code"]
+    }
+  ],
+  "estadisticas": {
+    "anos_experiencia": "+8",
+    "proyectos_exitosos": "+20",
+    "clientes_satisfechos": "+15"
+  },
+  "stack_tecnologico": {
+    "frontend_moderno": [
+      "Next.js",
+      "React",
+      "TypeScript",
+      "JavaScript (ES6+)",
+      "React Native (Expo)",
+      "Consumo de APIs RESTful"
+    ],
+    "backend_y_datos": [
+      "Supabase (BaaS)",
+      "Creación de APIs",
+      "Node.js (Básico/Intermedio)"
+    ],
+    "devops_e_infraestructura": [
+      "Docker",
+      "Administración de Servidores Linux",
+      "Gestión de Hosting y Dominios (DNS)",
+      "Git & GitHub (Control de versiones)"
+    ],
+    "pagos_y_comercio": [
+      "Integración Stripe API",
+      "Integración PayPal",
+      "WooCommerce Avanzado"
+    ],
+    "herramientas_y_flujo": [
+      "Cursor (AI Code Editor)",
+      "Opencode (AI Agents)",
+      "VS Code",
+      "Despliegue Continuo (CI/CD básico)"
+    ]
+  },
+  "experiencia_laboral": [
+    {
+      "rol": "Desarrollador Full Stack & Freelancer",
+      "periodo": "Actualidad",
+      "empresa": "Independiente",
+      "descripcion": "Desarrollo de aplicaciones web modernas, APIs RESTful y apps móviles. Gestión de infraestructura en Linux con Docker y despliegue en Vercel. Integración de pasarelas de pago (Stripe/PayPal) y desarrollo de sistemas de ticketing para eventos.",
+      "logros": [
+        "Desarrollé pateperro.online, plataforma integral para publicar y vender eventos con sistema de entradas y validación de accesos",
+        "Desarrollé Tu Menú Digital, plataforma SaaS completa para restaurantes",
+        "Construyo APIs robustas con autenticación Bearer para consumo web y móvil",
+        "Desarrollo apps Android/iPhone con React Native Expo"
+      ]
+    },
+    {
+      "empresa": "Polygon CRM",
+      "rol": "Desarrollador Full Stack",
+      "periodo": "2021 - 2023",
+      "descripcion": "Trabajo enfocado en el desarrollo y la implementación de estrategias CRM, liderando equipos y optimizando procesos de ventas y marketing.",
+      "logros": [
+        "Lideré el desarrollo de funcionalidades clave del CRM que mejoraron la eficiencia del equipo de ventas",
+        "Implementé automatizaciones que redujeron el tiempo de gestión de clientes en un 50%",
+        "Colaboré estrechamente con el equipo de marketing para crear herramientas de análisis de datos"
+      ]
+    },
+    {
+      "rol": "Asesor de Transformación Digital",
+      "periodo": "2018 - 2021",
+      "empresa": "Consultoría Independiente",
+      "descripcion": "Asesoramiento en procesos de transformación digital, implementando nuevas tecnologías para optimizar la presencia online.",
+      "logros": [
+        "Ayudé a más de 15 empresas a modernizar sus procesos digitales",
+        "Implementé soluciones que aumentaron la productividad de los equipos en promedio un 40%",
+        "Diseñé estrategias de migración de sistemas legacy a arquitecturas modernas"
+      ]
+    },
+    {
+      "empresa": "White Shark Media",
+      "rol": "Supervisor del departamento Creativo & Web",
+      "periodo": "2016 - 2018",
+      "descripcion": "Supervisión de equipos creativos y control de calidad visual y técnica en entregables web.",
+      "logros": [
+        "Gestioné un equipo de 8 diseñadores y desarrolladores",
+        "Establecí procesos de control de calidad que redujeron errores en producción en un 70%",
+        "Desarrollé metodologías ágiles que mejoraron la entrega de proyectos"
+      ]
+    }
+  ],
+  "proyectos_destacados": [
+    {
+      "nombre": "pateperro.online",
+      "categoria": "Plataforma de Eventos",
+      "descripcion": "Plataforma todo-en-uno para gestionar eventos de principio a fin. Permite crear eventos, cobrar entradas en línea y validar accesos el día del evento. Incluye panel de administración para organizadores y apps móviles (Android/iPhone) en desarrollo para validación de tickets.",
+      "imagen": "/projects/pateperro.png",
+      "enlace": "https://pateperro.online/",
+      "tecnologias": ["Next.js", "TypeScript", "Supabase", "React Native Expo", "Vercel"],
+      "impacto": "Plataforma todo-en-uno para la gestión completa de eventos con sistema de ticketing y validación de accesos integrado."
+    },
+    {
+      "nombre": "Proyectos Open Source / GitHub",
+      "categoria": "Desarrollo Full Stack",
+      "tecnologias": ["Next.js", "TypeScript", "Supabase"],
+      "descripcion": "Colección de repositorios con implementaciones de autenticación, CRUDs y arquitecturas escalables.",
+      "imagen": "/projects/github.png",
+      "enlace": "https://github.com/sbarkerzamora/"
+    },
+    {
+      "nombre": "Tu Menú Digital",
+      "categoria": "Producto Digital",
+      "descripcion": "Plataforma SaaS completa para restaurantes que permite crear menús digitales interactivos, gestionar pedidos en línea, reservas de mesas, comandas de cocina y sistema de pagos integrado. Desarrollado con Next.js, TypeScript y Supabase.",
+      "imagen": "/projects/tumenudigital.png",
+      "enlace": "https://tumenudigital.app/",
+      "tecnologias": ["Next.js", "TypeScript", "Supabase", "Stripe", "Docker"],
+      "impacto": "Más de 200 restaurantes en Latinoamérica confían en la plataforma para digitalizar sus operaciones."
+    },
+    {
+      "nombre": "Polygon CRM",
+      "categoria": "SaaS / CRM",
+      "descripcion": "Plataforma completa de gestión de relaciones con clientes (CRM) con funcionalidades avanzadas de automatización, análisis de datos y gestión de ventas. Incluye integraciones con herramientas de marketing y sistemas de facturación.",
+      "imagen": "/projects/polygoncrm.png",
+      "enlace": "https://polygoncrm.com/",
+      "tecnologias": ["Next.js", "React", "TypeScript", "Supabase", "Stripe"],
+      "impacto": "Sistema utilizado por equipos de ventas para optimizar procesos y aumentar conversiones."
+    },
+    {
+      "nombre": "Doctor Wise",
+      "categoria": "Salud / App",
+      "descripcion": "Plataforma integral para el sector salud que conecta doctores y pacientes, facilitando la gestión de citas, historiales médicos digitales y comunicación segura. Incluye sistema de recordatorios y gestión de disponibilidad.",
+      "imagen": "/projects/doctorwise.png",
+      "enlace": "https://doctorwise.cloud/",
+      "tecnologias": ["Next.js", "TypeScript", "Supabase", "Stripe"],
+      "impacto": "Facilita la gestión de citas médicas mejorando la experiencia tanto para profesionales como pacientes."
+    },
+    {
+      "nombre": "Dra. Alma Sánchez",
+      "categoria": "Salud / Marca Personal",
+      "descripcion": "Sitio web de marca personal para servicios médicos profesionales.",
+      "imagen": "/projects/dralmasanchez.png",
+      "enlace": "https://dralmasanchez.com/"
+    },
+    {
+      "nombre": "Hurtado Arquitectos",
+      "categoria": "Portafolio / Arquitectura",
+      "descripcion": "Portafolio web para firma de arquitectos, destacando proyectos visuales y diseño minimalista.",
+      "imagen": "/projects/hurtadoarquitectos.png",
+      "enlace": "https://www.hurtadoarq.com/"
+    },
+    {
+      "nombre": "Excello BPO",
+      "categoria": "Corporativo / BPO",
+      "descripcion": "Sitio web corporativo para empresa de BPO, mostrando servicios de outsourcing y contact center.",
+      "imagen": "/projects/excellobpo.png",
+      "enlace": "https://excellobpo.com/"
+    },
+    {
+      "nombre": "Interface Outsourcing",
+      "categoria": "Corporativo / Outsourcing",
+      "descripcion": "Página web para empresa de outsourcing, enfocada en soluciones empresariales y atracción de clientes.",
+      "imagen": "/projects/interfaceoutsourcing.png",
+      "enlace": "https://interfaceoutsourcing.com/"
+    }
+  ],
+  "contacto": {
+    "call_to_action": "POTENCIA TU PROYECTO",
+    "subtitulo": "¿Necesitas una integración compleja o una app moderna? Hablemos de cómo Next.js y una infraestructura sólida pueden escalar tu negocio.",
+    "texto_boton": "HABLEMOS DE CÓDIGO"
+  },
+  "servicios": {
+    "eyebrow": "SERVICIOS",
+    "titulo": "¿Qué hago?",
+    "descripcion": "Combino estrategia, velocidad y habilidad para entregar soluciones digitales excepcionales — siempre.",
+    "items": [
+      {
+        "titulo": "Desarrollo Full-Stack",
+        "descripcion": "Aplicaciones web modernas y escalables con Next.js, TypeScript y Supabase — desde MVP hasta producto maduro.",
+        "tags": ["NEXT.JS", "TYPESCRIPT", "SUPABASE", "REACT", "APIs RESTful", "DOCKER"],
+        "imagenes": [
+          "/assets/que-hago/full-stack/156shots_so.webp",
+          "/assets/que-hago/full-stack/615shots_so.webp",
+          "/assets/que-hago/full-stack/671shots_so.webp"
+        ]
+      },
+      {
+        "titulo": "WordPress & WooCommerce",
+        "descripcion": "Sitios rápidos, optimizados para SEO y fáciles de administrar. Tiendas online listas para vender.",
+        "tags": ["WORDPRESS", "WOOCOMMERCE", "SEO", "PERFORMANCE", "CMS", "E-COMMERCE"],
+        "imagenes": [
+          "/assets/que-hago/wordpress/468shots_so.webp",
+          "/assets/que-hago/wordpress/525shots_so.webp",
+          "/assets/que-hago/wordpress/968shots_so.webp"
+        ]
+      },
+      {
+        "titulo": "Integraciones & Pagos",
+        "descripcion": "Conecta tu negocio con Stripe, PayPal y APIs externas. Automatizaciones que ahorran tiempo y dinero.",
+        "tags": ["STRIPE API", "PAYPAL", "WEBHOOKS", "AUTOMATIZACIÓN", "APIs", "ZAPIER"],
+        "imagenes": [
+          "/assets/que-hago/automations/542shots_so.webp"
+        ]
+      }
+    ]
+  },
+  "en": {
+    "titulo_principal": "FULL STACK DEVELOPER & DIGITAL CONSULTANT",
+    "resumen_perfil": "Full stack developer with experience in Next.js, Supabase and React Native. Specialized in building SaaS platforms, robust APIs and mobile applications that solve real business problems.",
+    "valores": [
+      "Transparency at every project stage",
+      "Clear and constant communication",
+      "Clean, maintainable code",
+      "Scalable solutions from day one",
+      "Continuous learning and adaptation"
+    ],
+    "experiencia_laboral": [
+      {
+        "rol": "Full Stack Developer & Freelancer",
+        "descripcion": "Modern web application development, RESTful APIs and mobile apps. Linux infrastructure management with Docker and Vercel deployment. Payment gateway integration (Stripe/PayPal) and event ticketing system development.",
+        "logros": [
+          "Built pateperro.online, a comprehensive platform for publishing and selling events with ticket system and access validation",
+          "Built Tu Menú Digital, a complete SaaS platform for restaurants",
+          "Build robust APIs with Bearer authentication for web and mobile consumption",
+          "Develop Android/iPhone apps with React Native Expo"
+        ]
+      },
+      {
+        "rol": "Full Stack Developer",
+        "descripcion": "Focused on CRM strategy development and implementation, leading teams and optimizing sales and marketing processes.",
+        "logros": [
+          "Led development of key CRM functionalities that improved sales team efficiency",
+          "Implemented automations that reduced client management time by 50%",
+          "Collaborated closely with marketing team to create data analysis tools"
+        ]
+      },
+      {
+        "rol": "Digital Transformation Consultant",
+        "descripcion": "Advisory on digital transformation processes, implementing new technologies to optimize online presence.",
+        "logros": [
+          "Helped over 15 companies modernize their digital processes",
+          "Implemented solutions that increased team productivity by an average of 40%",
+          "Designed migration strategies from legacy systems to modern architectures"
+        ]
+      },
+      {
+        "rol": "Creative & Web Department Supervisor",
+        "descripcion": "Creative team supervision and visual/technical quality control on web deliverables.",
+        "logros": [
+          "Managed a team of 8 designers and developers",
+          "Established quality control processes that reduced production errors by 70%",
+          "Developed agile methodologies that improved project delivery"
+        ]
+      }
+    ],
+    "categoryLabels": {
+      "frontend_moderno": "Modern Frontend",
+      "backend_y_datos": "Backend & Data",
+      "devops_e_infraestructura": "DevOps & Infrastructure",
+      "pagos_y_comercio": "Payments & Commerce",
+      "herramientas_y_flujo": "Tools & Workflow"
+    }
+  }
+}

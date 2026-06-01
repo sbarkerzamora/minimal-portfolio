@@ -22,14 +22,34 @@
 .DS_Store
 *.pem
 
+# tool config directories
+.agents/
+.claude/
+.cursor/
+.gemini/
+.impeccable/
+.kiro/
+.marscode/
+.opencode/
+skills-lock.json
+
+# legacy PNG images (WebP versions are the source of truth)
+public/avatar.png
+public/icons/*.png
+
+# unused assets
+public/acerca-de.webp
+
 # debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+bun.lock
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # typescript
 *.tsbuildinfo

@@ -1,10 +1,45 @@
-import { Geist, Geist_Mono } from "next/font/google"
+import { Geist_Mono, Inter } from "next/font/google"
+import type { Metadata, Viewport } from "next"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'})
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://stephanbarker.com"
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+}
+
+export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  title: {
+    template: "%s | Stephan Barker",
+    default: "Stephan Barker — Desarrollador Full Stack & Asesor Digital",
+  },
+  description:
+    "Desarrollador full stack con +8 años de experiencia. Especialista en Next.js, Supabase y React Native. Creo plataformas SaaS, APIs robustas y apps móviles.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "Stephan Barker — Desarrollador Full Stack & Asesor Digital",
+    description:
+      "Desarrollador full stack con +8 años de experiencia. Especialista en Next.js, Supabase y React Native.",
+    url: SITE_URL,
+    siteName: "Stephan Barker",
+    locale: "es_NI",
+    type: "website",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+}
+
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
 const fontMono = Geist_Mono({
   subsets: ["latin"],
@@ -18,9 +53,9 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="es"
       suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", geist.variable)}
+      className={cn("antialiased", fontMono.variable, "font-sans", inter.variable)}
     >
       <body>
         <ThemeProvider>{children}</ThemeProvider>
