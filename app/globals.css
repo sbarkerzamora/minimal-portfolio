@@ -267,10 +267,6 @@
     opacity: 0.45;
   }
 
-  .spotify-player-dialog {
-    border: 0;
-  }
-
   .spotify-player-dialog::backdrop {
     background: color-mix(in oklch, black 72%, transparent);
     backdrop-filter: blur(8px);

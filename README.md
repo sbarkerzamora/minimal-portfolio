@@ -42,4 +42,6 @@ SPOTIFY_REDIRECT_URI=http://127.0.0.1:3000/api/spotify/callback
 
 Spotify Web Playback SDK requires Spotify Premium. New Development Mode applications are limited to five authorized users. Public access requires the appropriate Spotify quota mode, and Spotify restricts commercial streaming integrations without prior approval.
 
+The authorization requests `streaming`, `user-read-email`, `user-read-private`, and `user-modify-playback-state`. When these permissions change, existing users are asked to connect again so Spotify can issue a token with the current scopes.
+
 The portfolio still renders and works normally when Spotify is not configured.

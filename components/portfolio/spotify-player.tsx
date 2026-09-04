@@ -3,8 +3,9 @@
 import {
   ArrowSquareOut,
   CaretDown,
+  CircleNotch,
   CornersOut,
-  DeviceMobileSpeaker,
+  LockSimple,
   Pause,
   Play,
   SignOut,
@@ -17,6 +18,9 @@ import {
 import Image from "next/image"
 import Script from "next/script"
 import { useEffect, useRef, useState } from "react"
+
+import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
 type PlayerPhase =
   "idle" | "authorizing" | "loading" | "ready" | "playing" | "paused" | "error"
@@ -76,6 +80,26 @@ function getSpotifyUrl(uri?: string) {
     : "https://open.spotify.com"
 }
 
+function getSpotifySdkErrorMessage(errorMessage: string) {
+  const normalizedMessage = errorMessage.toLowerCase()
+  if (normalizedMessage.includes("scope")) {
+    return "La autorización de Spotify cambió. Conecta tu cuenta de nuevo"
+  }
+  if (
+    normalizedMessage.includes("account") ||
+    normalizedMessage.includes("premium")
+  ) {
+    return "Se necesita una cuenta Spotify Premium para reproducir aquí"
+  }
+  if (
+    normalizedMessage.includes("token") ||
+    normalizedMessage.includes("auth")
+  ) {
+    return "La sesión de Spotify venció. Conecta tu cuenta de nuevo"
+  }
+  return "Spotify no pudo iniciar la reproducción"
+}
+
 function SpotifyPlayer({
   configured,
   contextUri,
@@ -84,8 +108,11 @@ function SpotifyPlayer({
   contextUri?: string
 }) {
   const [phase, setPhase] = useState<PlayerPhase>("idle")
-  const [message, setMessage] = useState("Conecta Spotify para escuchar música")
+  const [message, setMessage] = useState(
+    "Conecta una cuenta Premium para reproducir aquí"
+  )
   const [loadSdk, setLoadSdk] = useState(false)
+  const [needsFreshAuthorization, setNeedsFreshAuthorization] = useState(false)
   const [deviceId, setDeviceId] = useState<string>()
   const [playbackState, setPlaybackState] =
     useState<Spotify.WebPlaybackState | null>(null)
@@ -120,10 +147,13 @@ function SpotifyPlayer({
       setLoadSdk(true)
     } else if (spotifyStatus) {
       setPhase("error")
+      setNeedsFreshAuthorization(spotifyStatus === "scope-error")
       setMessage(
         spotifyStatus === "denied"
           ? "No se autorizó el acceso a Spotify"
-          : "No fue posible conectar Spotify"
+          : spotifyStatus === "scope-error"
+            ? "Spotify no concedió los permisos necesarios. Conecta de nuevo"
+            : "No fue posible conectar Spotify"
       )
     }
 
@@ -165,6 +195,11 @@ function SpotifyPlayer({
       return
     }
 
+    if (needsFreshAuthorization) {
+      await authorizeSpotify("Conectando otra cuenta de Spotify")
+      return
+    }
+
     setPhase("loading")
     setMessage("Comprobando sesión de Spotify")
 
@@ -176,11 +211,7 @@ function SpotifyPlayer({
       if (window.Spotify) initializePlayer()
     } catch (error) {
       if (error instanceof SpotifySessionError && error.status === 401) {
-        setPhase("authorizing")
-        setMessage("Abriendo autorización de Spotify")
-        // A hard navigation is required because this Route Handler redirects off-origin.
-        // eslint-disable-next-line @next/next/no-location-assign-relative-destination
-        window.location.assign("/api/spotify/login")
+        await authorizeSpotify("Abriendo autorización de Spotify")
         return
       }
 
@@ -191,12 +222,28 @@ function SpotifyPlayer({
     }
   }
 
+  async function authorizeSpotify(statusMessage: string) {
+    setPhase("authorizing")
+    setMessage(statusMessage)
+
+    if (needsFreshAuthorization) {
+      await fetch("/api/spotify/logout", { method: "POST" }).catch(
+        () => undefined
+      )
+    }
+
+    // A hard navigation is required because this Route Handler redirects off-origin.
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+    window.location.assign("/api/spotify/login")
+  }
+
   function resetPlayer(errorMessage: string) {
     const player = playerRef.current
     playerRef.current = null
     player?.disconnect()
     setDeviceId(undefined)
     setPlaybackState(null)
+    setPosition(0)
     setLoadSdk(false)
     setPhase("error")
     setMessage(errorMessage)
@@ -225,6 +272,7 @@ function SpotifyPlayer({
 
     player.addListener("ready", ({ device_id }) => {
       setDeviceId(device_id)
+      setNeedsFreshAuthorization(false)
       setPhase("ready")
       setMessage(
         contextUri ? "Listo para reproducir" : "Listo para continuar tu música"
@@ -241,19 +289,26 @@ function SpotifyPlayer({
       setMessage(state.paused ? "Pausado" : "Reproduciendo")
     })
     player.addListener("initialization_error", ({ message: errorMessage }) => {
-      resetPlayer(errorMessage)
+      if (errorMessage.toLowerCase().includes("scope")) {
+        setNeedsFreshAuthorization(true)
+      }
+      resetPlayer(getSpotifySdkErrorMessage(errorMessage))
     })
     player.addListener("authentication_error", ({ message: errorMessage }) => {
-      resetPlayer(errorMessage)
+      setNeedsFreshAuthorization(true)
+      resetPlayer(
+        errorMessage.toLowerCase().includes("scope")
+          ? "La autorización de Spotify cambió. Conecta tu cuenta de nuevo"
+          : "La sesión de Spotify venció. Conecta tu cuenta de nuevo"
+      )
     })
     player.addListener("account_error", () => {
-      resetPlayer(
-        "Spotify Premium es necesario para reproducir en el navegador"
-      )
+      setNeedsFreshAuthorization(true)
+      resetPlayer("Se necesita una cuenta Spotify Premium para reproducir aquí")
     })
     player.addListener("playback_error", ({ message: errorMessage }) => {
       setPhase("error")
-      setMessage(errorMessage)
+      setMessage(getSpotifySdkErrorMessage(errorMessage))
     })
     player.addListener("autoplay_failed", () => {
       setPhase("paused")
@@ -296,8 +351,7 @@ function SpotifyPlayer({
           }
         )
 
-        if (!response.ok)
-          throw new Error("Spotify no pudo iniciar esta selección")
+        if (!response.ok) throwSpotifyPlaybackError(response.status)
       } else {
         const response = await fetch("https://api.spotify.com/v1/me/player", {
           method: "PUT",
@@ -308,10 +362,17 @@ function SpotifyPlayer({
           body: JSON.stringify({ device_ids: [deviceId], play: true }),
         })
 
-        if (!response.ok)
-          throw new Error("Abre una canción en Spotify y vuelve a intentarlo")
+        if (!response.ok) throwSpotifyPlaybackError(response.status)
       }
     } catch (error) {
+      if (
+        error instanceof SpotifySessionError &&
+        (error.status === 401 || error.status === 403)
+      ) {
+        setNeedsFreshAuthorization(true)
+        resetPlayer(error.message)
+        return
+      }
       setPhase("error")
       setMessage(
         error instanceof Error
@@ -319,6 +380,19 @@ function SpotifyPlayer({
           : "No fue posible iniciar la reproducción"
       )
     }
+  }
+
+  function throwSpotifyPlaybackError(status: number): never {
+    const errorMessages: Record<number, string> = {
+      401: "La sesión de Spotify venció. Conecta tu cuenta de nuevo",
+      403: "Se necesita una cuenta Spotify Premium para reproducir aquí",
+      404: "El reproductor todavía no está disponible. Intenta de nuevo",
+      429: "Spotify está limitando las solicitudes. Intenta más tarde",
+    }
+    throw new SpotifySessionError(
+      errorMessages[status] ?? "Spotify no pudo iniciar la reproducción",
+      status
+    )
   }
 
   async function togglePlayback() {
@@ -376,10 +450,12 @@ function SpotifyPlayer({
       playerRef.current = null
       player?.disconnect()
       setPlaybackState(null)
+      setPosition(0)
       setDeviceId(undefined)
       setLoadSdk(false)
+      setNeedsFreshAuthorization(false)
       setPhase("idle")
-      setMessage("Sesión de Spotify cerrada")
+      setMessage("Conecta una cuenta Premium para reproducir aquí")
       dialogRef.current?.close()
     } catch {
       setPhase("error")
@@ -394,6 +470,9 @@ function SpotifyPlayer({
       : "Conectar Spotify"
   const trackUrl = getSpotifyUrl(currentTrack?.uri)
   const artwork = currentTrack?.album.images[0]?.url
+  const isBusy = phase === "loading" || phase === "authorizing"
+  const connectLabel = needsFreshAuthorization ? "Cambiar cuenta" : "Conectar"
+  const visibleMessage = configured ? message : "Spotify no está disponible"
 
   return (
     <>
@@ -413,24 +492,24 @@ function SpotifyPlayer({
       <section
         id="spotify-player"
         aria-label="Reproductor de Spotify"
-        className="fixed right-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] left-0 z-40 h-16 border-t border-border bg-background/96 px-3 backdrop-blur-xl lg:bottom-0 lg:left-[4.75rem] lg:h-24 lg:px-5"
+        className="fixed right-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] left-0 z-40 h-14 border-t border-border bg-background/96 px-3 backdrop-blur-xl lg:bottom-0 lg:left-[4.75rem] lg:h-[4.5rem] lg:px-4"
       >
         <p className="sr-only" aria-live="polite">
-          {message}
+          {visibleMessage}
         </p>
-        <div className="mx-auto grid h-full max-w-[92rem] grid-cols-[minmax(0,1fr)_auto] items-center gap-3 lg:grid-cols-[minmax(12rem,1fr)_auto_minmax(12rem,1fr)] lg:gap-6">
-          <div className="flex min-w-0 items-center gap-3">
+        <div className="mx-auto grid h-full max-w-[92rem] grid-cols-[minmax(0,1fr)_auto] items-center gap-2 lg:grid-cols-[minmax(12rem,1fr)_auto_minmax(12rem,1fr)] lg:gap-4">
+          <div className="flex min-w-0 items-center gap-2.5">
             {artwork ? (
               <Image
                 src={artwork}
                 alt=""
-                width={56}
-                height={56}
-                className="size-11 rounded object-cover lg:size-14"
+                width={40}
+                height={40}
+                className="size-10 shrink-0 rounded object-cover"
               />
             ) : (
-              <span className="flex size-11 shrink-0 items-center justify-center rounded bg-muted text-brand lg:size-14">
-                <SpotifyLogo className="size-6" weight="fill" />
+              <span className="flex size-10 shrink-0 items-center justify-center rounded bg-muted text-brand">
+                <SpotifyLogo className="size-5" weight="fill" />
               </span>
             )}
             <div className="min-w-0">
@@ -444,19 +523,29 @@ function SpotifyPlayer({
                   <span className="block truncate text-xs font-semibold group-hover:underline lg:text-sm">
                     {currentTrack.name}
                   </span>
-                  <span className="block truncate text-[11px] text-muted-foreground lg:text-xs">
+                  <span className="block truncate text-[11px] text-muted-foreground">
                     {currentTrack.artists
                       .map((artist) => artist.name)
                       .join(", ")}
+                    <span aria-hidden="true"> · </span>
+                    {message}
                   </span>
                 </a>
               ) : (
                 <>
                   <p className="truncate text-xs font-semibold lg:text-sm">
                     Spotify
+                    <span className="text-[10px] font-medium text-muted-foreground lg:text-[11px]">
+                      {isConnected ? " · Conectado" : " · Premium requerido"}
+                    </span>
                   </p>
-                  <p className="line-clamp-2 text-[11px] leading-4 text-muted-foreground lg:text-xs">
-                    {message}
+                  <p
+                    className={cn(
+                      "truncate text-[11px] text-muted-foreground",
+                      phase === "error" && "text-destructive"
+                    )}
+                  >
+                    {visibleMessage}
                   </p>
                 </>
               )}
@@ -465,109 +554,148 @@ function SpotifyPlayer({
 
           <div className="flex items-center justify-end gap-1.5 lg:flex-col lg:gap-1">
             <div className="flex items-center gap-1.5">
-              <button
-                type="button"
-                aria-label="Pista anterior"
-                disabled={previousDisabled}
-                className="hidden size-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:opacity-35 lg:flex"
-                onClick={() => void skipTrack("previous")}
-              >
-                <SkipBack className="size-4" weight="fill" />
-              </button>
-              <button
-                type="button"
-                aria-label={playButtonLabel}
-                className="flex size-10 items-center justify-center rounded-full bg-foreground text-background transition-transform duration-150 hover:scale-105 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none active:scale-95 disabled:opacity-50 motion-reduce:transition-none lg:size-9"
-                disabled={playDisabled}
-                onClick={() => void togglePlayback()}
-              >
-                {phase === "loading" || phase === "authorizing" ? (
-                  <span className="size-4 animate-spin rounded-full border-2 border-background/35 border-t-background" />
-                ) : isPlaying ? (
-                  <Pause className="size-4" weight="fill" />
-                ) : (
-                  <Play className="size-4 translate-x-px" weight="fill" />
-                )}
-              </button>
-              <button
-                type="button"
-                aria-label="Pista siguiente"
-                disabled={nextDisabled}
-                className="hidden size-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:opacity-35 lg:flex"
-                onClick={() => void skipTrack("next")}
-              >
-                <SkipForward className="size-4" weight="fill" />
-              </button>
-              <button
-                type="button"
-                aria-label="Abrir reproductor"
-                className="flex size-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none lg:hidden"
-                onClick={() => dialogRef.current?.showModal()}
-              >
-                <CornersOut className="size-4" weight="bold" />
-              </button>
+              {isConnected ? (
+                <>
+                  <button
+                    type="button"
+                    aria-label="Pista anterior"
+                    disabled={previousDisabled}
+                    className="hidden size-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:opacity-35 lg:flex"
+                    onClick={() => void skipTrack("previous")}
+                  >
+                    <SkipBack className="size-4" weight="fill" />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label={playButtonLabel}
+                    className="flex size-11 items-center justify-center rounded-full bg-foreground text-background transition-transform duration-150 hover:scale-105 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none active:scale-95 disabled:opacity-50 motion-reduce:transition-none lg:size-9"
+                    disabled={playDisabled}
+                    onClick={() => void togglePlayback()}
+                  >
+                    {isBusy ? (
+                      <CircleNotch
+                        className="size-4 animate-spin"
+                        weight="bold"
+                      />
+                    ) : isPlaying ? (
+                      <Pause className="size-4" weight="fill" />
+                    ) : (
+                      <Play className="size-4 translate-x-px" weight="fill" />
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Pista siguiente"
+                    disabled={nextDisabled}
+                    className="hidden size-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:opacity-35 lg:flex"
+                    onClick={() => void skipTrack("next")}
+                  >
+                    <SkipForward className="size-4" weight="fill" />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Abrir controles de Spotify"
+                    className="flex size-11 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none lg:hidden"
+                    onClick={() => dialogRef.current?.showModal()}
+                  >
+                    <CornersOut className="size-4" weight="bold" />
+                  </button>
+                </>
+              ) : (
+                <Button
+                  type="button"
+                  size="sm"
+                  className="h-11 rounded-full px-4 lg:h-8"
+                  disabled={!configured || isBusy}
+                  onClick={() => void connectSpotify()}
+                >
+                  {isBusy ? (
+                    <CircleNotch
+                      data-icon="inline-start"
+                      className="animate-spin"
+                    />
+                  ) : (
+                    <SpotifyLogo data-icon="inline-start" weight="fill" />
+                  )}
+                  {isBusy ? "Conectando" : connectLabel}
+                </Button>
+              )}
             </div>
 
-            <div className="hidden w-[clamp(16rem,36vw,36rem)] items-center gap-2 text-[10px] text-muted-foreground tabular-nums lg:flex">
-              <span className="w-9 text-right">{formatTime(position)}</span>
-              <input
-                type="range"
-                min={0}
-                max={Math.max(duration, 1)}
-                step={1000}
-                value={Math.min(position, Math.max(duration, 1))}
-                disabled={seekDisabled}
-                aria-label="Posición de reproducción"
-                aria-valuetext={`${formatTime(position)} de ${formatTime(duration)}`}
-                className="player-range flex-1"
-                style={
-                  {
-                    "--range-progress": `${duration ? (position / duration) * 100 : 0}%`,
-                  } as React.CSSProperties
-                }
-                onChange={(event) => void seek(Number(event.target.value))}
-              />
-              <span className="w-9">{formatTime(duration)}</span>
-            </div>
+            {isConnected ? (
+              <div className="hidden w-[clamp(16rem,34vw,32rem)] items-center gap-2 text-[10px] text-muted-foreground tabular-nums lg:flex">
+                <span className="w-8 text-right">{formatTime(position)}</span>
+                <input
+                  type="range"
+                  min={0}
+                  max={Math.max(duration, 1)}
+                  step={1000}
+                  value={Math.min(position, Math.max(duration, 1))}
+                  disabled={seekDisabled}
+                  aria-label="Posición de reproducción"
+                  aria-valuetext={`${formatTime(position)} de ${formatTime(duration)}`}
+                  className="player-range flex-1"
+                  style={
+                    {
+                      "--range-progress": `${duration ? (position / duration) * 100 : 0}%`,
+                    } as React.CSSProperties
+                  }
+                  onChange={(event) => void seek(Number(event.target.value))}
+                />
+                <span className="w-8">{formatTime(duration)}</span>
+              </div>
+            ) : null}
           </div>
 
-          <div className="hidden items-center justify-end gap-2 lg:flex">
+          <div className="hidden min-w-36 items-center justify-end gap-2 lg:flex">
             {phase === "error" ? (
               <WarningCircle
                 className="size-4 text-destructive"
                 weight="fill"
                 aria-hidden="true"
               />
-            ) : (
-              <DeviceMobileSpeaker
+            ) : !isConnected ? (
+              <LockSimple
                 className="size-4 text-muted-foreground"
-                weight="regular"
+                weight="bold"
                 aria-hidden="true"
               />
+            ) : null}
+            {isConnected ? (
+              <>
+                <SpeakerHigh
+                  className="size-4 text-muted-foreground"
+                  weight="fill"
+                  aria-hidden="true"
+                />
+                <input
+                  type="range"
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  value={volume}
+                  aria-label="Volumen"
+                  className="player-range w-20"
+                  style={
+                    {
+                      "--range-progress": `${volume * 100}%`,
+                    } as React.CSSProperties
+                  }
+                  onChange={(event) =>
+                    void setVolume(Number(event.target.value))
+                  }
+                />
+              </>
+            ) : (
+              <span
+                className={cn(
+                  "max-w-48 text-right text-xs leading-4 text-muted-foreground",
+                  phase === "error" && "text-destructive"
+                )}
+              >
+                {phase === "error" ? visibleMessage : "Cuenta Premium"}
+              </span>
             )}
-            <span className="max-w-48 text-right text-xs leading-4 text-muted-foreground">
-              {message}
-            </span>
-            <SpeakerHigh
-              className="ml-2 size-4 text-muted-foreground"
-              weight="fill"
-              aria-hidden="true"
-            />
-            <input
-              type="range"
-              min={0}
-              max={1}
-              step={0.01}
-              value={volume}
-              aria-label="Volumen"
-              className="player-range w-24"
-              style={
-                {
-                  "--range-progress": `${volume * 100}%`,
-                } as React.CSSProperties
-              }
-              onChange={(event) => void setVolume(Number(event.target.value))}
-            />
             {isConnected ? (
               <button
                 type="button"
@@ -585,9 +713,9 @@ function SpotifyPlayer({
       <dialog
         ref={dialogRef}
         aria-labelledby="spotify-dialog-title"
-        className="spotify-player-dialog m-0 h-svh max-h-none w-full max-w-none bg-background p-0 text-foreground"
+        className="spotify-player-dialog m-auto max-h-[calc(100svh-2rem)] w-[calc(100%-1.5rem)] max-w-sm overflow-hidden rounded-2xl border border-border bg-background p-0 text-foreground shadow-2xl"
       >
-        <div className="flex h-full flex-col px-6 pt-[max(1.25rem,env(safe-area-inset-top))] pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+        <div className="p-4">
           <div className="flex items-center justify-between">
             <button
               type="button"
@@ -597,11 +725,8 @@ function SpotifyPlayer({
             >
               <CaretDown className="size-5" weight="bold" />
             </button>
-            <p
-              id="spotify-dialog-title"
-              className="text-xs font-bold tracking-wide uppercase"
-            >
-              Reproduciendo desde Spotify
+            <p id="spotify-dialog-title" className="text-sm font-semibold">
+              Spotify
             </p>
             <div className="flex items-center">
               {isConnected ? (
@@ -626,36 +751,61 @@ function SpotifyPlayer({
             </div>
           </div>
 
-          <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center gap-5">
+          <div className="mt-4 flex flex-col gap-4">
             {artwork ? (
               <Image
                 src={artwork}
                 alt=""
-                width={512}
-                height={512}
-                className="mx-auto aspect-square w-[min(100%,42svh)] rounded-lg object-cover shadow-2xl"
+                width={96}
+                height={96}
+                className="mx-auto size-24 rounded-lg object-cover"
               />
             ) : (
-              <div className="mx-auto flex aspect-square w-[min(100%,42svh)] items-center justify-center rounded-lg bg-muted">
-                <SpotifyLogo className="size-24 text-brand" weight="fill" />
+              <div className="mx-auto flex size-24 items-center justify-center rounded-lg bg-muted">
+                <SpotifyLogo className="size-10 text-brand" weight="fill" />
               </div>
             )}
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
-                <p className="truncate text-xl font-bold">
-                  {currentTrack?.name ?? "Spotify"}
+                <p className="truncate text-base font-bold">
+                  {currentTrack?.name ??
+                    (isConnected
+                      ? "Spotify conectado"
+                      : "Spotify Premium requerido")}
                 </p>
-                <p className="line-clamp-2 text-sm text-muted-foreground">
+                <p className="line-clamp-2 text-sm leading-5 text-muted-foreground">
                   {currentTrack?.artists
                     .map((artist) => artist.name)
-                    .join(", ") ?? message}
+                    .join(", ") ?? visibleMessage}
                 </p>
               </div>
               <SpotifyLogo
-                className="size-6 shrink-0 text-brand"
+                className="size-5 shrink-0 text-brand"
                 weight="fill"
                 aria-label="Contenido de Spotify"
               />
+            </div>
+            <div
+              className={cn(
+                "flex items-start gap-2 rounded-lg bg-muted/60 px-3 py-2 text-xs leading-5 text-muted-foreground",
+                phase === "error" && "text-destructive"
+              )}
+              aria-live="polite"
+            >
+              {phase === "error" ? (
+                <WarningCircle
+                  className="mt-0.5 size-4 shrink-0"
+                  weight="fill"
+                />
+              ) : isConnected ? (
+                <SpotifyLogo
+                  className="mt-0.5 size-4 shrink-0 text-brand"
+                  weight="fill"
+                />
+              ) : (
+                <LockSimple className="mt-0.5 size-4 shrink-0" weight="bold" />
+              )}
+              <span>{visibleMessage}</span>
             </div>
             <div>
               <input
@@ -680,39 +830,98 @@ function SpotifyPlayer({
                 <span>{formatTime(duration)}</span>
               </div>
             </div>
-            <div className="flex items-center justify-center gap-8">
-              <button
+            {isConnected ? (
+              <div className="flex items-center justify-center gap-6">
+                <button
+                  type="button"
+                  aria-label="Pista anterior"
+                  disabled={previousDisabled}
+                  className="flex size-11 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:opacity-35"
+                  onClick={() => void skipTrack("previous")}
+                >
+                  <SkipBack className="size-5" weight="fill" />
+                </button>
+                <button
+                  type="button"
+                  aria-label={playButtonLabel}
+                  className="flex size-12 items-center justify-center rounded-full bg-foreground text-background transition-transform active:scale-95 disabled:opacity-50 motion-reduce:transition-none"
+                  disabled={playDisabled}
+                  onClick={() => void togglePlayback()}
+                >
+                  {isBusy ? (
+                    <CircleNotch
+                      className="size-5 animate-spin"
+                      weight="bold"
+                    />
+                  ) : isPlaying ? (
+                    <Pause className="size-5" weight="fill" />
+                  ) : (
+                    <Play className="size-5 translate-x-px" weight="fill" />
+                  )}
+                </button>
+                <button
+                  type="button"
+                  aria-label="Pista siguiente"
+                  disabled={nextDisabled}
+                  className="flex size-11 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:opacity-35"
+                  onClick={() => void skipTrack("next")}
+                >
+                  <SkipForward className="size-5" weight="fill" />
+                </button>
+              </div>
+            ) : (
+              <Button
                 type="button"
-                aria-label="Pista anterior"
-                disabled={previousDisabled}
-                className="flex size-12 items-center justify-center rounded-full text-muted-foreground disabled:opacity-35"
-                onClick={() => void skipTrack("previous")}
+                size="lg"
+                className="h-11 w-full rounded-full"
+                disabled={!configured || isBusy}
+                onClick={() => void connectSpotify()}
               >
-                <SkipBack className="size-6" weight="fill" />
-              </button>
-              <button
-                type="button"
-                aria-label={playButtonLabel}
-                className="flex size-16 items-center justify-center rounded-full bg-foreground text-background transition-transform active:scale-95"
-                disabled={playDisabled}
-                onClick={() => void togglePlayback()}
-              >
-                {isPlaying ? (
-                  <Pause className="size-7" weight="fill" />
+                {isBusy ? (
+                  <CircleNotch
+                    data-icon="inline-start"
+                    className="animate-spin"
+                  />
                 ) : (
-                  <Play className="size-7 translate-x-px" weight="fill" />
+                  <SpotifyLogo data-icon="inline-start" weight="fill" />
                 )}
-              </button>
-              <button
-                type="button"
-                aria-label="Pista siguiente"
-                disabled={nextDisabled}
-                className="flex size-12 items-center justify-center rounded-full text-muted-foreground disabled:opacity-35"
-                onClick={() => void skipTrack("next")}
-              >
-                <SkipForward className="size-6" weight="fill" />
-              </button>
-            </div>
+                {isBusy ? "Conectando" : `${connectLabel} Spotify`}
+              </Button>
+            )}
+            {isConnected ? (
+              <div className="flex items-center gap-3 border-t border-border pt-4">
+                <SpeakerHigh
+                  className="size-4 shrink-0 text-muted-foreground"
+                  weight="fill"
+                  aria-hidden="true"
+                />
+                <input
+                  type="range"
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  value={volume}
+                  aria-label="Volumen"
+                  className="player-range flex-1"
+                  style={
+                    {
+                      "--range-progress": `${volume * 100}%`,
+                    } as React.CSSProperties
+                  }
+                  onChange={(event) =>
+                    void setVolume(Number(event.target.value))
+                  }
+                />
+                <span className="w-8 text-right text-[10px] text-muted-foreground tabular-nums">
+                  {Math.round(volume * 100)}%
+                </span>
+              </div>
+            ) : (
+              <p className="text-center text-[11px] leading-4 text-muted-foreground">
+                La reproducción en el navegador está disponible únicamente para
+                cuentas Spotify Premium.
+              </p>
+            )}
           </div>
         </div>
       </dialog>

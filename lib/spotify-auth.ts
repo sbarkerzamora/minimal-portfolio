@@ -8,22 +8,31 @@ export const spotifyCookieNames = {
   accessToken: "spotify_access_token",
   accessTokenExpiresAt: "spotify_access_expires_at",
   codeVerifier: "spotify_code_verifier",
+  grantedScopes: "spotify_granted_scopes",
   refreshToken: "spotify_refresh_token",
   state: "spotify_oauth_state",
 } as const
 
-export const spotifyScopes = [
+export const spotifyRequiredScopes = [
   "streaming",
-  "user-read-playback-state",
+  "user-read-email",
+  "user-read-private",
   "user-modify-playback-state",
-  "user-read-currently-playing",
-].join(" ")
+] as const
+
+export const spotifyScopes = spotifyRequiredScopes.join(" ")
+
+export function hasRequiredSpotifyScopes(scopes?: string) {
+  if (!scopes) return false
+  const grantedScopes = new Set(scopes.split(/\s+/))
+  return spotifyRequiredScopes.every((scope) => grantedScopes.has(scope))
+}
 
 interface SpotifyTokenResponse {
   access_token: string
   expires_in: number
   refresh_token?: string
-  scope: string
+  scope?: string
   token_type: "Bearer"
 }
 

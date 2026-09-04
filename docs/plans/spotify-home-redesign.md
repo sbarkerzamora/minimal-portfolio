@@ -26,7 +26,7 @@ Redesign the home page as a fast, minimalist portfolio experience inspired by Sp
 
 ## Spotify Integration
 
-- Use Authorization Code with PKCE and the minimum scopes: `streaming`, `user-read-playback-state`, `user-modify-playback-state`, and `user-read-currently-playing`.
+- Use Authorization Code with PKCE and the scopes required by Web Playback SDK and local playback control: `streaming`, `user-read-email`, `user-read-private`, and `user-modify-playback-state`.
 - Add login, callback, token refresh, and logout Route Handlers.
 - Store PKCE state, verifier, and refresh token in secure HttpOnly cookies. Never persist tokens in local storage.
 - Load `https://sdk.scdn.co/spotify-player.js` only after explicit user intent.

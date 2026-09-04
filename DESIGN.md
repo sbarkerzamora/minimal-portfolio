@@ -25,8 +25,8 @@ The interface should feel precise, compact, and fast. Functional icons, typograp
 
 ## Layout
 
-- Desktop uses a fixed 76px icon rail, a centered content area, and a 96px bottom player.
-- Mobile uses a compact header, a 64px mini player, and a 64px bottom navigation area plus safe-area padding.
+- Desktop uses a fixed 76px icon rail, a centered content area, and a 72px bottom player.
+- Mobile uses a compact header, a 56px mini player, and a 64px bottom navigation area plus safe-area padding.
 - Main content is a simple vertical sequence: profile, recent projects, stack, experience, about, catalog, services, activity, contact.
 - Use flat rows for lists and one-level surfaces for collections. Never nest cards.
 - Sticky and fixed controls must not obscure focused content.

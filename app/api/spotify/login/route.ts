@@ -29,6 +29,7 @@ export function GET(request: NextRequest) {
   }).toString()
 
   const response = NextResponse.redirect(authorizationUrl)
+  response.headers.set("Cache-Control", "no-store, max-age=0")
   response.cookies.set(
     spotifyCookieNames.state,
     state,

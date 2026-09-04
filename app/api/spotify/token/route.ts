@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server"
 
 import {
   getSpotifyConfig,
+  hasRequiredSpotifyScopes,
   refreshSpotifyToken,
   spotifyCookieNames,
   spotifyCookieOptions,
@@ -10,6 +11,17 @@ import {
 } from "@/lib/spotify-auth"
 
 const NO_STORE_HEADERS = { "Cache-Control": "no-store, max-age=0" }
+
+function authorizationRequired(message: string) {
+  const response = NextResponse.json(
+    { error: message },
+    { status: 401, headers: NO_STORE_HEADERS }
+  )
+  Object.values(spotifyCookieNames).forEach((cookieName) =>
+    response.cookies.set(cookieName, "", spotifyCookieOptions(0))
+  )
+  return response
+}
 
 export async function POST(request: NextRequest) {
   const { clientId } = getSpotifyConfig(request.url)
@@ -22,9 +34,16 @@ export async function POST(request: NextRequest) {
 
   const cookieStore = await cookies()
   const accessToken = cookieStore.get(spotifyCookieNames.accessToken)?.value
+  const grantedScopes = cookieStore.get(spotifyCookieNames.grantedScopes)?.value
   const expiresAt = Number(
     cookieStore.get(spotifyCookieNames.accessTokenExpiresAt)?.value ?? 0
   )
+
+  if (!hasRequiredSpotifyScopes(grantedScopes)) {
+    return authorizationRequired(
+      "Spotify necesita autorización con los permisos actualizados"
+    )
+  }
 
   if (accessToken && expiresAt > Date.now() + 30_000) {
     return NextResponse.json({ accessToken }, { headers: NO_STORE_HEADERS })
@@ -32,14 +51,18 @@ export async function POST(request: NextRequest) {
 
   const refreshToken = cookieStore.get(spotifyCookieNames.refreshToken)?.value
   if (!refreshToken) {
-    return NextResponse.json(
-      { error: "Spotify necesita autorización" },
-      { status: 401, headers: NO_STORE_HEADERS }
-    )
+    return authorizationRequired("Spotify necesita autorización")
   }
 
   try {
     const token = await refreshSpotifyToken(clientId, refreshToken)
+    const refreshedScopes = token.scope ?? grantedScopes
+    if (!refreshedScopes || !hasRequiredSpotifyScopes(refreshedScopes)) {
+      return authorizationRequired(
+        "Spotify necesita autorización con los permisos actualizados"
+      )
+    }
+
     const response = NextResponse.json(
       { accessToken: token.access_token },
       { headers: NO_STORE_HEADERS }
@@ -53,6 +76,11 @@ export async function POST(request: NextRequest) {
       spotifyCookieNames.accessTokenExpiresAt,
       String(Date.now() + token.expires_in * 1000),
       spotifyCookieOptions(token.expires_in)
+    )
+    response.cookies.set(
+      spotifyCookieNames.grantedScopes,
+      refreshedScopes,
+      spotifyCookieOptions(60 * 60 * 24 * 30)
     )
     if (token.refresh_token) {
       response.cookies.set(
@@ -87,25 +115,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const response = NextResponse.json(
-      { error: "La sesión de Spotify venció" },
-      { status: 401, headers: NO_STORE_HEADERS }
-    )
-    response.cookies.set(
-      spotifyCookieNames.accessToken,
-      "",
-      spotifyCookieOptions(0)
-    )
-    response.cookies.set(
-      spotifyCookieNames.accessTokenExpiresAt,
-      "",
-      spotifyCookieOptions(0)
-    )
-    response.cookies.set(
-      spotifyCookieNames.refreshToken,
-      "",
-      spotifyCookieOptions(0)
-    )
-    return response
+    return authorizationRequired("La sesión de Spotify venció")
   }
 }

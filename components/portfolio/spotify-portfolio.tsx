@@ -130,7 +130,7 @@ function SpotifyPortfolio() {
       <main className="min-h-svh bg-background text-foreground lg:pl-[4.75rem]">
         <IconNavigation />
 
-        <div className="mx-auto w-full max-w-[92rem] pb-36 lg:pb-28">
+        <div className="mx-auto w-full max-w-[92rem] pb-32 lg:pb-24">
           <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-border/80 bg-background/88 px-4 backdrop-blur-xl sm:px-6 lg:px-8">
             <a
               href="#inicio"
