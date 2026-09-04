@@ -1,9 +1,7 @@
-import { Geist_Mono, Inter } from "next/font/google"
 import type { Metadata, Viewport } from "next"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import { cn } from "@/lib/utils"
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://stephanbarker.com"
 
@@ -39,24 +37,13 @@ export const metadata: Metadata = {
   },
 }
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
-
-const fontMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-})
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
   return (
-    <html
-      lang="es"
-      suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", inter.variable)}
-    >
+    <html lang="es" suppressHydrationWarning className="font-sans antialiased">
       <body>
         <ThemeProvider>{children}</ThemeProvider>
       </body>

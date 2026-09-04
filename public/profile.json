@@ -2,7 +2,7 @@
   "perfil_profesional": {
     "nombre": "Stephan Barker",
     "titulo_principal": "DESARROLLADOR FULL STACK & ASESOR DIGITAL",
-    "resumen_perfil": "Desarrollador full stack con experiencia en Next.js, Supabase y React Native. Especialista en crear plataformas SaaS, APIs robustas y aplicaciones móviles que resuelven problemas reales de negocio.",
+    "resumen_perfil": "Desarrollador Full Stack / React con más de 8 años de experiencia liderando productos digitales completos, desde estrategia y arquitectura técnica hasta desarrollo, despliegue, validación y lanzamiento. Experiencia práctica con React, Next.js, TypeScript, APIs REST, backend, apps móviles y plataformas SaaS/e-commerce.",
     "descripcion_hero": "Más de 8 años transformando ideas en productos digitales. Desarrolo plataformas web escalables con Next.js y Supabase, creo APIs seguras y construyo apps móviles con React Native. También trabajo con WordPress & WooCommerce cuando la situación lo requiere.",
     "filosofia_trabajo": "Creo en la simplicidad y la eficiencia. Cada proyecto que desarrollo busca resolver problemas reales con soluciones elegantes y escalables. Me apasiona encontrar el equilibrio perfecto entre la velocidad del desarrollo y la calidad del código.",
     "valores": [
@@ -121,44 +121,37 @@
   },
   "experiencia_laboral": [
     {
-      "rol": "Desarrollador Full Stack & Freelancer",
-      "periodo": "Actualidad",
-      "empresa": "Independiente",
-      "descripcion": "Desarrollo de aplicaciones web modernas, APIs RESTful y apps móviles. Gestión de infraestructura en Linux con Docker y despliegue en Vercel. Integración de pasarelas de pago (Stripe/PayPal) y desarrollo de sistemas de ticketing para eventos.",
+      "rol": "Full Product Developer",
+      "periodo": "2026",
+      "empresa": "justo.stephanbarker.com",
+      "descripcion": "Lideré el desarrollo completo del producto y su lanzamiento, desde el concepto y la arquitectura técnica hasta la implementación, despliegue y salida al mercado.",
       "logros": [
-        "Desarrollé pateperro.online, plataforma integral para publicar y vender eventos con sistema de entradas y validación de accesos",
-        "Desarrollé Tu Menú Digital, plataforma SaaS completa para restaurantes",
-        "Construyo APIs robustas con autenticación Bearer para consumo web y móvil",
-        "Desarrollo apps Android/iPhone con React Native Expo"
+        "Stack: Next.js, React, TypeScript, Redis, OpenAI API, Vercel."
       ]
     },
     {
-      "empresa": "Polygon CRM",
-      "rol": "Desarrollador Full Stack",
+      "rol": "Full Product Developer",
+      "periodo": "2024 - 2025",
+      "empresa": "pateperro.online",
+      "descripcion": "Lideré el desarrollo completo del producto y su lanzamiento, incluyendo diseño de API, arquitectura backend, desarrollo frontend, app Android y ejecución go-to-market.",
+      "logros": [
+        "Stack: Next.js, React, TypeScript, Supabase, React Native Expo, Stripe, Vercel."
+      ]
+    },
+    {
+      "rol": "Founder / Full Business Development",
       "periodo": "2021 - 2023",
-      "descripcion": "Trabajo enfocado en el desarrollo y la implementación de estrategias CRM, liderando equipos y optimizando procesos de ventas y marketing.",
+      "empresa": "tumenudigital.app",
+      "descripcion": "Lideré el desarrollo completo del negocio y la ejecución del producto, desde el concepto y la estrategia hasta la entrega de la plataforma, validación con clientes y crecimiento.",
       "logros": [
-        "Lideré el desarrollo de funcionalidades clave del CRM que mejoraron la eficiencia del equipo de ventas",
-        "Implementé automatizaciones que redujeron el tiempo de gestión de clientes en un 50%",
-        "Colaboré estrechamente con el equipo de marketing para crear herramientas de análisis de datos"
+        "Stack: Laravel, VPS, Cloudflare, WordPress, Brevo."
       ]
     },
     {
-      "rol": "Asesor de Transformación Digital",
-      "periodo": "2018 - 2021",
-      "empresa": "Consultoría Independiente",
-      "descripcion": "Asesoramiento en procesos de transformación digital, implementando nuevas tecnologías para optimizar la presencia online.",
-      "logros": [
-        "Ayudé a más de 15 empresas a modernizar sus procesos digitales",
-        "Implementé soluciones que aumentaron la productividad de los equipos en promedio un 40%",
-        "Diseñé estrategias de migración de sistemas legacy a arquitecturas modernas"
-      ]
-    },
-    {
-      "empresa": "White Shark Media",
+      "empresa": "White Shark Media Agencia de Marketing",
       "rol": "Supervisor del departamento Creativo & Web",
-      "periodo": "2016 - 2018",
-      "descripcion": "Supervisión de equipos creativos y control de calidad visual y técnica en entregables web.",
+      "periodo": "2014 - 2017",
+      "descripcion": "Supervisé equipos creativos y web, asegurando calidad visual y técnica en entregables digitales para clientes.",
       "logros": [
         "Gestioné un equipo de 8 diseñadores y desarrolladores",
         "Establecí procesos de control de calidad que redujeron errores en producción en un 70%",
@@ -240,6 +233,16 @@
       "enlace": "https://interfaceoutsourcing.com/"
     }
   ],
+  "educacion": {
+    "institucion": "Platzi",
+    "perfil": "platzi.com/p/stephanbarker",
+    "descripcion": "He realizado todos mis estudios en Platzi. Mis certificados pueden verificarse en mi perfil.",
+    "certificados_relevantes": [
+      "Curso Básico de Programación",
+      "Curso Práctico de Frontend Developer",
+      "Curso de Frontend Developer"
+    ]
+  },
   "contacto": {
     "call_to_action": "POTENCIA TU PROYECTO",
     "subtitulo": "¿Necesitas una integración compleja o una app moderna? Hablemos de cómo Next.js y una infraestructura sólida pueden escalar tu negocio.",
@@ -282,7 +285,7 @@
   },
   "en": {
     "titulo_principal": "FULL STACK DEVELOPER & DIGITAL CONSULTANT",
-    "resumen_perfil": "Full stack developer with experience in Next.js, Supabase and React Native. Specialized in building SaaS platforms, robust APIs and mobile applications that solve real business problems.",
+    "resumen_perfil": "Full Stack / React Developer with 8+ years of experience leading complete digital products, from strategy and technical architecture to development, deployment, validation, and launch. Hands-on experience with React, Next.js, TypeScript, REST APIs, backend, mobile apps, and SaaS/e-commerce platforms.",
     "valores": [
       "Transparency at every project stage",
       "Clear and constant communication",
@@ -292,36 +295,29 @@
     ],
     "experiencia_laboral": [
       {
-        "rol": "Full Stack Developer & Freelancer",
-        "descripcion": "Modern web application development, RESTful APIs and mobile apps. Linux infrastructure management with Docker and Vercel deployment. Payment gateway integration (Stripe/PayPal) and event ticketing system development.",
+        "rol": "Full Product Developer",
+        "descripcion": "Led full product development and launch, from product concept and technical architecture to implementation, deployment, and market release.",
         "logros": [
-          "Built pateperro.online, a comprehensive platform for publishing and selling events with ticket system and access validation",
-          "Built Tu Menú Digital, a complete SaaS platform for restaurants",
-          "Build robust APIs with Bearer authentication for web and mobile consumption",
-          "Develop Android/iPhone apps with React Native Expo"
+          "Stack: Next.js, React, TypeScript, Redis, OpenAI API, Vercel."
         ]
       },
       {
-        "rol": "Full Stack Developer",
-        "descripcion": "Focused on CRM strategy development and implementation, leading teams and optimizing sales and marketing processes.",
+        "rol": "Full Product Developer",
+        "descripcion": "Led full product development and launch, including API design, backend architecture, frontend development, Android app development, and go-to-market execution.",
         "logros": [
-          "Led development of key CRM functionalities that improved sales team efficiency",
-          "Implemented automations that reduced client management time by 50%",
-          "Collaborated closely with marketing team to create data analysis tools"
+          "Stack: Next.js, React, TypeScript, Supabase, React Native Expo, Stripe, Vercel."
         ]
       },
       {
-        "rol": "Digital Transformation Consultant",
-        "descripcion": "Advisory on digital transformation processes, implementing new technologies to optimize online presence.",
+        "rol": "Founder / Full Business Development",
+        "descripcion": "Led full business development and product execution, from concept and strategy to platform delivery, customer validation, and growth.",
         "logros": [
-          "Helped over 15 companies modernize their digital processes",
-          "Implemented solutions that increased team productivity by an average of 40%",
-          "Designed migration strategies from legacy systems to modern architectures"
+          "Stack: Laravel, VPS, Cloudflare, WordPress, Brevo."
         ]
       },
       {
         "rol": "Creative & Web Department Supervisor",
-        "descripcion": "Creative team supervision and visual/technical quality control on web deliverables.",
+        "descripcion": "Supervised creative and web teams, ensuring visual and technical quality across client digital deliverables.",
         "logros": [
           "Managed a team of 8 designers and developers",
           "Established quality control processes that reduced production errors by 70%",
@@ -329,6 +325,16 @@
         ]
       }
     ],
+    "educacion": {
+      "institucion": "Platzi",
+      "perfil": "platzi.com/p/stephanbarker",
+      "descripcion": "I have completed all my studies at Platzi. My certificates can be verified on my profile.",
+      "certificados_relevantes": [
+        "Basic Programming Course",
+        "Practical Frontend Developer Course",
+        "Frontend Developer Course"
+      ]
+    },
     "categoryLabels": {
       "frontend_moderno": "Modern Frontend",
       "backend_y_datos": "Backend & Data",

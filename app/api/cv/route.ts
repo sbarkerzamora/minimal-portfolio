@@ -45,6 +45,7 @@ function buildPDF(doc: PDFKit.PDFDocument, lang: Lang) {
 
   const isES = lang === "es"
   const experiencia = isES ? experienciaES : experienciaEN
+  const educacion = isES ? profileData.educacion : en.educacion
 
   const gray = "#6b7280"
   const emerald = "#059669"
@@ -58,6 +59,7 @@ function buildPDF(doc: PDFKit.PDFDocument, lang: Lang) {
     secProfile: string
     secStack: string
     secExperience: string
+    secEducation: string
     secValues: string
   } = {
     title: isES ? p.titulo_principal : en.titulo_principal,
@@ -75,6 +77,7 @@ function buildPDF(doc: PDFKit.PDFDocument, lang: Lang) {
     secProfile: isES ? "PERFIL PROFESIONAL" : "PROFESSIONAL PROFILE",
     secStack: isES ? "STACK TECNOLÓGICO" : "TECH STACK",
     secExperience: isES ? "EXPERIENCIA LABORAL" : "WORK EXPERIENCE",
+    secEducation: isES ? "EDUCACIÓN" : "EDUCATION",
     secValues: isES ? "VALORES" : "VALUES",
   }
 
@@ -167,6 +170,28 @@ function buildPDF(doc: PDFKit.PDFDocument, lang: Lang) {
     }
     doc.moveDown(0.5)
   }
+
+  if (doc.y > 680) {
+    doc.addPage()
+  }
+
+  // ── Education ──
+  doc.font("Helvetica-Bold").fontSize(10).fillColor(black).text(S.secEducation)
+  doc.moveDown(0.3)
+  doc
+    .font("Helvetica-Bold")
+    .fontSize(9)
+    .fillColor(black)
+    .text(`${educacion.institucion} · ${educacion.perfil}`)
+  doc.moveDown(0.15)
+  doc.font("Helvetica").fontSize(8).fillColor(gray).text(educacion.descripcion, { align: "justify" })
+  doc.moveDown(0.2)
+  doc
+    .font("Helvetica")
+    .fontSize(7.5)
+    .fillColor(gray)
+    .text(`· ${educacion.certificados_relevantes.join(" · ")}`, { indent: 8, align: "justify" })
+  doc.moveDown(0.6)
 
   if (doc.y > 720) {
     doc.addPage()

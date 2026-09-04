@@ -7,33 +7,27 @@ import { cn } from "@/lib/utils"
 
 function ThemeToggle({ className }: { className?: string }) {
   const { resolvedTheme, setTheme } = useTheme()
-  const isDark = resolvedTheme === "dark"
 
   return (
     <button
       type="button"
       suppressHydrationWarning
-      aria-label={isDark ? "Cambiar a tema claro" : "Cambiar a tema oscuro"}
+      aria-label="Cambiar tema"
+      data-tooltip="Cambiar tema"
       className={cn(
-        "group flex size-10 items-center justify-center rounded-2xl border border-border/80 bg-background/85 text-muted-foreground shadow-sm backdrop-blur transition-[transform,background-color,border-color,color,box-shadow] duration-200 ease-out hover:-translate-y-0.5 hover:border-emerald-500/40 hover:bg-muted hover:text-foreground hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/45 active:translate-y-px motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:size-11",
+        "icon-tooltip group flex size-11 items-center justify-center rounded-full text-muted-foreground transition-[transform,background-color,color] duration-150 ease-out hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none active:scale-95 motion-reduce:transition-none",
         className
       )}
-      onClick={() => setTheme(isDark ? "light" : "dark")}
+      onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
     >
       <span className="relative size-4 overflow-hidden">
         <Sun
           weight="bold"
-          className={cn(
-            "absolute inset-0 size-4 transition duration-200 ease-out",
-            isDark ? "-rotate-90 scale-50 opacity-0" : "rotate-0 scale-100 opacity-100"
-          )}
+          className="absolute inset-0 size-4 scale-100 rotate-0 opacity-100 transition duration-200 ease-out dark:scale-50 dark:-rotate-90 dark:opacity-0"
         />
         <Moon
           weight="bold"
-          className={cn(
-            "absolute inset-0 size-4 transition duration-200 ease-out",
-            isDark ? "rotate-0 scale-100 opacity-100" : "rotate-90 scale-50 opacity-0"
-          )}
+          className="absolute inset-0 size-4 scale-50 rotate-90 opacity-0 transition duration-200 ease-out dark:scale-100 dark:rotate-0 dark:opacity-100"
         />
       </span>
     </button>

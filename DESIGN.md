@@ -1,71 +1,72 @@
 # Design System
 
-## Overview
+## Direction
 
-Stephan Barker's portfolio is a restrained personal brand surface: centered composition, black and white structure, precise spacing, useful iconography, and emerald accents held to roughly 5-10% of the visible interface. It should feel designed, but not loud.
+The portfolio uses a minimalist application shell inspired by Spotify's information architecture and interaction model. Stephan Barker remains the primary brand. Spotify branding is limited to authenticated playback, metadata attribution, and links back to Spotify.
+
+The interface should feel precise, compact, and fast. Functional icons, typography, spacing, and state changes carry the hierarchy. Avoid decorative shaders, glass panels, large gradients, nested cards, and motion without feedback value.
 
 ## Color
 
-- Primary surfaces use existing shadcn semantic tokens: `bg-background`, `text-foreground`, `text-muted-foreground`, `border-border`, `bg-card`.
-- Emerald is the single accent. Use it for CTAs, focus rings, selected navigation state, small status marks, and low-opacity atmosphere.
-- Current emerald usage appears in the hero halo, availability dot, title label, capability icons, dock hover states, and focus rings.
-- Avoid gradient text, rainbow palettes, beige/cream defaults, and decorative color fields.
-- Dark mode should preserve restraint: high contrast, subtle emerald light, no neon transformation.
+- Use shadcn semantic tokens throughout project components.
+- Dark mode is the default: near-black background, slightly raised neutral surfaces, high-contrast white text.
+- Light mode uses neutral white and gray surfaces with the same hierarchy.
+- `primary` is a restrained Spotify green used for playback, availability, focus, and selected states.
+- Never use gradient text or introduce additional accent colors.
+- Spotify artwork must remain unmodified and must not receive overlays, filters, or animation.
 
 ## Typography
 
-- Use the current project fonts from `app/layout.tsx`: Inter for the main sans face and Geist Mono for compact technical labels.
-- Hero display uses a strong scale with tight but safe tracking: `tracking-[-0.04em]`, capped below the 6rem display ceiling.
-- Use `text-balance` for display headings and `text-pretty` for longer prose.
-- Avoid all-caps body copy. Short technical labels may use uppercase when brief and intentional.
+- Use the local platform sans stack defined by `--font-body`; do not download web fonts.
+- Use one family, three primary weights, and a compact type scale.
+- Display headings may use tight tracking down to `-0.04em` and must remain below 6rem.
+- Balance headings and use pretty wrapping for longer prose.
+- Keep paragraphs below 75 characters per line where practical.
 
 ## Layout
 
-- The hero owns exactly one viewport with `h-svh`.
-- Primary content is centered vertically and horizontally.
-- Bottom padding reserves space for the fixed dock without increasing page height.
-- Background treatment uses a masked grid and subtle radial emerald wash. These are atmosphere, not the main design.
-- Dock navigation is fixed bottom center on all viewport sizes.
-
-## Components
-
-- Do not modify `components/ui/*` unless explicitly requested.
-- Current installed shadcn usage: `Button` composed with `asChild` for links.
-- Project-specific components live under `components/portfolio/*`:
-  - `hero.tsx`: avatar, identity, CTAs, capability chips, compact stats.
-  - `nav-dock.tsx`: bottom-center icon dock.
-  - `theme-toggle.tsx`: light/dark toggle inside the dock.
-  - `github-activity.tsx`: compact GitHub contribution graph using real public contribution data.
-- SmoothUI registry components live under `components/smoothui/*`. Review and adapt generated files so they respect project tokens and accessibility.
-- Content is normalized through `lib/profile.ts`, which reads from `public/profile.json`.
+- Desktop uses a fixed 76px icon rail, a centered content area, and a 96px bottom player.
+- Mobile uses a compact header, a 64px mini player, and a 64px bottom navigation area plus safe-area padding.
+- Main content is a simple vertical sequence: profile, recent projects, stack, experience, about, catalog, services, activity, contact.
+- Use flat rows for lists and one-level surfaces for collections. Never nest cards.
+- Sticky and fixed controls must not obscure focused content.
 
 ## Icons
 
-- Use Phosphor icons from `@phosphor-icons/react` or `@phosphor-icons/react/dist/ssr`.
-- Stack technology logos use `@ridemountainpig/svgl-react` for official SVGs (Nextjs, React, TypeScript, etc.).
-- SVG logo components with Light/Dark variants use CSS theme toggle (`.block .dark:hidden` / `.hidden .dark:block`).
-- Hero action icons: download, GitHub, external arrow.
-- Dock icons: home, user, briefcase, stack, folder, envelope, sun/moon.
-- Icons should support wayfinding or meaning. Avoid decorative icon clouds.
+- Use `@phosphor-icons/react` and direct SSR imports in Server Components.
+- Every icon must communicate navigation, an action, a technology, attribution, or status.
+- Icon-only actions require an accessible name and a tooltip when used in the desktop rail.
+- Use regular weight for idle controls, bold for emphasis, and fill for selected or active states.
+- Keep primary navigation and playback targets at least 44px.
+
+## Components
+
+- `spotify-portfolio.tsx` owns the static server-rendered portfolio shell and content composition.
+- `spotify-player.tsx` is the isolated client island for OAuth state, SDK loading, and playback controls.
+- `github-activity.tsx` remains supporting proof and loads its interactive graph below the fold.
+- `theme-toggle.tsx` provides light/dark switching and the `D` keyboard shortcut remains available.
+- Preserve source components under `components/ui/*`; compose them without changing their upstream implementation.
 
 ## Motion
 
-- Entrance motion is limited to the hero container and capability chips.
-- Hover motion is subtle: small vertical lift, border shift, color shift, soft shadow.
-- Timing target: 150-300ms for microinteractions, 500-700ms for the initial hero entrance.
-- Use transform, opacity, border color, shadow, and bounded blur. Avoid layout-driving animation.
-- Respect `prefers-reduced-motion`; current portfolio animations disable under reduced motion.
+- Interaction timing should stay between 120ms and 220ms.
+- Animate transform, opacity, color, and bounded shadows only.
+- Use scale feedback for playback and primary controls, surface changes for rows, and icon weight/color changes for active state.
+- Do not animate Spotify artwork.
+- Disable or reduce custom motion through `prefers-reduced-motion`.
 
-## Current Hero Direction
+## Spotify Playback
 
-- Avatar at top using `/avatar.png`.
-- Centered name, normalized title, description, CTAs, stack logos, and compact proof stats.
-- Primary CTA: Descargar CV.
-- Secondary CTA: GitHub with icon.
-- GitHub contribution graph appears as a compact activity signature in the hero. It uses real public data for the GitHub profile URL in `public/profile.json`, revalidates every 12 hours, and falls back to deterministic placeholder activity if GitHub is unavailable.
-- Bottom-center dock with icon-only navigation and theme toggle.
+- The SDK is loaded only after explicit authorization.
+- The player must expose its connection, loading, playback, and error states in visible text and an ARIA live region.
+- Metadata and artwork link back to Spotify.
+- Keep playback optional: the portfolio remains complete when Spotify is unavailable or not configured.
+- Spotify Premium, Development Mode user limits, attribution rules, and commercial restrictions must be communicated in project documentation.
 
-## Next Visual Priorities
+## Accessibility
 
-- Add real sections for Sobre mí, Experiencia, Stack, Proyectos, and Contacto only when content is shaped, not as placeholders.
-- Consider a polished proof section next, using project data from `public/profile.json` without falling into repeated identical card grids.
+- Target WCAG 2.2 AA.
+- Keep semantic landmarks and one logical heading hierarchy.
+- Provide a skip link, visible focus rings, keyboard operation, native range controls, and a native dialog for expanded mobile playback.
+- Maintain at least 4.5:1 contrast for body text and 3:1 for UI graphics.
+- Use useful alt text for portfolio photography and empty alt text for artwork already described by adjacent metadata.

@@ -19,9 +19,13 @@ export const profile = profileData as ProfileData
 export const portfolioProfile = {
   professional: profileData.perfil_profesional,
   recentProjects: profileData.hero_proyectos_recientes,
+  featuredProjects: profileData.proyectos_destacados,
   stackCategorias: profileData.stack_categorias,
   stats: profileData.estadisticas,
   stack: profileData.stack_tecnologico,
+  experience: profileData.experiencia_laboral,
+  education: profileData.educacion,
+  services: profileData.servicios,
   contact: profileData.contacto,
   en: profileData.en,
   email: profileData.perfil_profesional.enlaces.email,

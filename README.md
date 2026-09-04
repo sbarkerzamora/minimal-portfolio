@@ -1,21 +1,45 @@
-# Next.js template
+# Minimal Portfolio
 
-This is a Next.js template with shadcn/ui.
+Stephan Barker's portfolio, built with Next.js 16, React 19, Tailwind CSS 4, shadcn/ui, and an optional Spotify Web Playback SDK integration.
 
-## Adding components
+## Development
 
-To add components to your app, run the following command:
+Install dependencies with pnpm and run project scripts through Bun:
 
 ```bash
-pnpm dlx shadcn@latest add button
+pnpm install
+bun run dev
 ```
 
-This will place the ui components in the `components` directory.
+Quality checks:
 
-## Using components
-
-To use the components in your app, import them as follows:
-
-```tsx
-import { Button } from "@/components/ui/button";
+```bash
+bun run typecheck
+bun run lint
+bun run build
 ```
+
+Professional content is managed in `public/profile.json`.
+
+## Spotify
+
+Create an application in the Spotify Developer Dashboard, enable Web Playback SDK, and register the exact callback URL used by the site.
+
+```env
+NEXT_PUBLIC_SITE_URL=https://stephanbarker.com
+SPOTIFY_CLIENT_ID=
+SPOTIFY_REDIRECT_URI=https://stephanbarker.com/api/spotify/callback
+SPOTIFY_CONTEXT_URI=spotify:playlist:...
+```
+
+For local development, Spotify requires a loopback IP rather than `localhost`. Register and use a callback such as:
+
+```env
+SPOTIFY_REDIRECT_URI=http://127.0.0.1:3000/api/spotify/callback
+```
+
+`SPOTIFY_CONTEXT_URI` accepts a Spotify track, album, artist, or playlist URI. If it is omitted, the player attempts to continue the visitor's active Spotify playback.
+
+Spotify Web Playback SDK requires Spotify Premium. New Development Mode applications are limited to five authorized users. Public access requires the appropriate Spotify quota mode, and Spotify restricts commercial streaming integrations without prior approval.
+
+The portfolio still renders and works normally when Spotify is not configured.
