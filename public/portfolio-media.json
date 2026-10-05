@@ -1,0 +1,25 @@
+{
+  "recent": [
+    { "src": "/placeholders/photo-1015.webp", "isPlaceholder": true },
+    { "src": "/placeholders/photo-1018.webp", "isPlaceholder": true },
+    { "src": "/placeholders/photo-1039.webp", "isPlaceholder": true },
+    { "src": "/placeholders/photo-1043.webp", "isPlaceholder": true }
+  ],
+  "catalog": [
+    { "src": "/placeholders/photo-1043.webp", "isPlaceholder": true },
+    { "src": "/placeholders/photo-1044.webp", "isPlaceholder": true },
+    { "src": "/placeholders/photo-1039.webp", "isPlaceholder": true },
+    { "src": "/placeholders/photo-1015.webp", "isPlaceholder": true },
+    { "src": "/placeholders/photo-1018.webp", "isPlaceholder": true },
+    { "src": "/placeholders/photo-1044.webp", "isPlaceholder": true },
+    { "src": "/placeholders/photo-1015.webp", "isPlaceholder": true },
+    { "src": "/placeholders/photo-1039.webp", "isPlaceholder": true },
+    { "src": "/placeholders/photo-1043.webp", "isPlaceholder": true }
+  ],
+  "services": [
+    { "src": "/placeholders/photo-1018.webp", "isPlaceholder": true },
+    { "src": "/placeholders/photo-1044.webp", "isPlaceholder": true },
+    { "src": "/placeholders/photo-1015.webp", "isPlaceholder": true }
+  ],
+  "contact": [{ "src": "/placeholders/photo-1039.webp", "isPlaceholder": true }]
+}

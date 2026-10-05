@@ -10,11 +10,13 @@ Founders, small business owners, product teams, and technical collaborators eval
 
 ## Product Purpose
 
-Present Stephan Barker as a practical, design-aware full-stack builder. The portfolio should make the visitor understand what he does, see evidence of craft in the interface itself, and move toward a clear next action: download the CV, open GitHub, review projects, or make contact.
+Present Stephan Barker as an AI Engineer and digital advisor. The homepage should quickly communicate his White Shark Media experience, current advisory/freelance work, and recent projects through a precise, text-led interface. Project links and GitHub activity provide supporting proof.
 
 ## Brand Personality
 
-Minimal, precise, technical. The voice should feel calm and intentional, with enough craft to signal seniority without becoming decorative noise.
+Calm, precise, direct. The current homepage uses a white canvas, crisp typography, the existing avatar, and a small contribution calendar. Dark mode uses charcoal and warm-white type, with restrained amber in the graph.
+
+The [current home plan](docs/plans/white-hero-redesign.md) and [SEO strategy](docs/plans/seo-strategy.md) define the live experience. [DESIGN.md](DESIGN.md) also records the archived ASCII Cinematic direction.
 
 ## Anti-references
 
@@ -23,11 +25,15 @@ Avoid generic SaaS landing pages, loud gradients, oversized fake metrics, repeat
 ## Design Principles
 
 - Make the portfolio itself prove the promise: clean systems, sharp details, careful interaction.
-- Keep content edited and useful. Every section should help a visitor understand capability, taste, or proof.
-- Use icons, motion, and emerald accents as signals, not decoration.
+- Keep every existing professional fact, collection, translation, and link. Improve hierarchy without rewriting the biography or inventing availability or metrics.
+- Keep motion brief and optional, use functional icons only for the theme selector, and reserve amber for contribution levels. The archived video does not load on the homepage.
 - Keep professional content editable from `public/profile.json` when practical.
-- Treat light and dark themes as equal brand expressions.
+- Default to the white theme and provide a persistent, user-controlled charcoal dark theme, independent of system appearance.
+- Keep the home page text-led and centered, with the avatar and GitHub contribution calendar as its only imagery/data graphic. Use quiet selectors for ES/EN and Claro/Oscuro.
+- Keep the single-screen composition centered, with minimal theme and language controls. ES and EN have separate canonical URLs (`/` and `/en`).
+- Preserve `/api/cv`, GitHub data/cache, metadata, and JSON-LD. Label synthetic GitHub fallback data explicitly; it is not verified activity. The archived multipanel experience retains its booking components.
+- Remove the Spotify integration locally without treating repository cleanup as revocation of external credentials or prior authorizations.
 
 ## Accessibility & Inclusion
 
-Target WCAG AA contrast. Preserve keyboard focus states, descriptive link labels, real alt text, minimum 44px touch targets for navigation controls, and reduced-motion alternatives for all custom animation.
+Target WCAG 2.2 AA contrast. Preserve keyboard focus states, descriptive link labels, real alt text, minimum 44px touch targets for navigation controls, and reduced-motion alternatives for all custom animation. Keep core content and language selection usable without JavaScript. Accessibility and performance targets require actual verification; do not present them as achieved without measurements.

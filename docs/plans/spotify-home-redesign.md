@@ -1,5 +1,11 @@
 # Spotify-Inspired Home Redesign
 
+> **Historical record, superseded on 2026-09-07.** The approved
+> [ASCII Cinematic redesign](ascii-cinematic-redesign.md) replaces this plan and
+> removes Spotify. Everything below records the former direction, not active
+> integration, configuration, dependency-upgrade, or verification instructions.
+> Its targets and checklists are not evidence of completed tests or measured performance.
+
 ## Goal
 
 Redesign the home page as a fast, minimalist portfolio experience inspired by Spotify. Preserve the existing profile information, use functional iconography throughout, and add a real Spotify Web Playback SDK integration that remains optional and does not block the portfolio.

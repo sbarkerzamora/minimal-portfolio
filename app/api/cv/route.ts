@@ -47,9 +47,11 @@ function buildPDF(doc: PDFKit.PDFDocument, lang: Lang) {
   const experiencia = isES ? experienciaES : experienciaEN
   const educacion = isES ? profileData.educacion : en.educacion
 
-  const gray = "#6b7280"
-  const emerald = "#059669"
-  const black = "#111827"
+  const gray = "#505458"
+  const ochre = "#85571c"
+  const black = "#0c0e10"
+  const rule = "#d5d3ce"
+  const right = doc.page.width - doc.page.margins.right
 
   const S: {
     title: string
@@ -82,14 +84,22 @@ function buildPDF(doc: PDFKit.PDFDocument, lang: Lang) {
   }
 
   // ── Header ──
-  doc.font("Helvetica-Bold").fontSize(28).fillColor(black).text(p.nombre, { align: "left" })
+  doc
+    .font("Helvetica-Bold")
+    .fontSize(32)
+    .fillColor(black)
+    .text(p.nombre, { align: "left" })
   doc.moveDown(0.2)
-  doc.font("Helvetica").fontSize(11).fillColor(emerald).text(S.title, { align: "left" })
-  doc.moveDown(0.2)
+  doc
+    .font("Helvetica")
+    .fontSize(11)
+    .fillColor(ochre)
+    .text(S.title, { align: "left" })
+  doc.moveDown(0.4)
 
   doc
     .font("Helvetica")
-    .fontSize(8)
+    .fontSize(8.5)
     .fillColor(gray)
     .text(
       [
@@ -97,21 +107,35 @@ function buildPDF(doc: PDFKit.PDFDocument, lang: Lang) {
         p.enlaces.github.replace("https://", ""),
         p.enlaces.email,
       ].join("  ·  "),
-      { align: "left" },
+      { align: "left" }
     )
-  doc.moveDown(0.6)
+  doc.moveDown(0.8)
 
-  doc.moveTo(56, doc.y).lineTo(559, doc.y).strokeColor("#e5e7eb").lineWidth(1).stroke()
-  doc.moveDown(0.6)
+  doc
+    .moveTo(56, doc.y)
+    .lineTo(right, doc.y)
+    .strokeColor(ochre)
+    .lineWidth(0.8)
+    .stroke()
+  doc.moveDown(0.8)
 
   // ── Profile ──
   doc.font("Helvetica-Bold").fontSize(10).fillColor(black).text(S.secProfile)
   doc.moveDown(0.3)
-  doc.font("Helvetica").fontSize(9).fillColor(gray).text(S.profile, { align: "justify" })
-  doc.moveDown(0.6)
+  doc
+    .font("Helvetica")
+    .fontSize(9.5)
+    .fillColor(gray)
+    .text(S.profile, { align: "left", lineGap: 1 })
+  doc.moveDown(0.8)
 
-  doc.moveTo(56, doc.y).lineTo(559, doc.y).strokeColor("#e5e7eb").lineWidth(1).stroke()
-  doc.moveDown(0.6)
+  doc
+    .moveTo(56, doc.y)
+    .lineTo(right, doc.y)
+    .strokeColor(rule)
+    .lineWidth(0.6)
+    .stroke()
+  doc.moveDown(0.8)
 
   // ── Stack ──
   doc.font("Helvetica-Bold").fontSize(10).fillColor(black).text(S.secStack)
@@ -119,31 +143,40 @@ function buildPDF(doc: PDFKit.PDFDocument, lang: Lang) {
 
   const xStart = 56
   const yStart = doc.y
-  const colWidth = 245
-  const rowGap = 16
+  const colWidth = (right - xStart - 20) / 2
+  const rowGap = 22
 
   Object.entries(stack).forEach(([key, items], i) => {
     const col = i % 2
     const row = Math.floor(i / 2)
-    const x = xStart + col * (colWidth + 16)
+    const x = xStart + col * (colWidth + 20)
     const y = yStart + row * rowGap * 2.2
 
     doc
       .font("Helvetica-Bold")
-      .fontSize(8)
+      .fontSize(8.5)
       .fillColor(black)
       .text(S.categoryLabels[key] ?? key, x, y, { width: colWidth })
     doc
       .font("Helvetica")
-      .fontSize(7.5)
+      .fontSize(8.5)
       .fillColor(gray)
-      .text(items.join(" · "), x, doc.y + 3, { width: colWidth, continued: false })
+      .text(items.join(" · "), x, doc.y + 3, {
+        width: colWidth,
+        lineGap: 1,
+        continued: false,
+      })
   })
 
-  doc.moveDown(3.5)
+  doc.moveDown(1.25)
 
-  doc.moveTo(56, doc.y).lineTo(559, doc.y).strokeColor("#e5e7eb").lineWidth(1).stroke()
-  doc.moveDown(0.6)
+  doc
+    .moveTo(56, doc.y)
+    .lineTo(right, doc.y)
+    .strokeColor(rule)
+    .lineWidth(0.6)
+    .stroke()
+  doc.moveDown(0.8)
 
   // ── Experience ──
   doc.font("Helvetica-Bold").fontSize(10).fillColor(black).text(S.secExperience)
@@ -153,22 +186,30 @@ function buildPDF(doc: PDFKit.PDFDocument, lang: Lang) {
     const exp = experiencia[i]
     const expES = experienciaES[i]
     const title = `${exp.rol} · ${expES?.empresa ?? ""}`
-    doc.font("Helvetica-Bold").fontSize(9).fillColor(black).text(title)
-    doc.font("Helvetica").fontSize(7.5).fillColor(emerald).text(expES?.periodo ?? "")
+    doc.font("Helvetica-Bold").fontSize(9.5).fillColor(black).text(title)
+    doc
+      .font("Helvetica")
+      .fontSize(8)
+      .fillColor(ochre)
+      .text(expES?.periodo ?? "")
     doc.moveDown(0.15)
-    doc.font("Helvetica").fontSize(8).fillColor(gray).text(exp.descripcion, { align: "justify" })
+    doc
+      .font("Helvetica")
+      .fontSize(9)
+      .fillColor(gray)
+      .text(exp.descripcion, { align: "left", lineGap: 1 })
     doc.moveDown(0.2)
 
     if (exp.logros?.length) {
       for (const logro of exp.logros) {
         doc
           .font("Helvetica")
-          .fontSize(7.5)
+          .fontSize(8.5)
           .fillColor(gray)
-          .text(`· ${logro}`, { indent: 8, align: "justify" })
+          .text(`· ${logro}`, { indent: 8, align: "left", lineGap: 0.5 })
       }
     }
-    doc.moveDown(0.5)
+    doc.moveDown(0.65)
   }
 
   if (doc.y > 680) {
@@ -184,13 +225,21 @@ function buildPDF(doc: PDFKit.PDFDocument, lang: Lang) {
     .fillColor(black)
     .text(`${educacion.institucion} · ${educacion.perfil}`)
   doc.moveDown(0.15)
-  doc.font("Helvetica").fontSize(8).fillColor(gray).text(educacion.descripcion, { align: "justify" })
+  doc
+    .font("Helvetica")
+    .fontSize(9)
+    .fillColor(gray)
+    .text(educacion.descripcion, { align: "left", lineGap: 1 })
   doc.moveDown(0.2)
   doc
     .font("Helvetica")
-    .fontSize(7.5)
+    .fontSize(8.5)
     .fillColor(gray)
-    .text(`· ${educacion.certificados_relevantes.join(" · ")}`, { indent: 8, align: "justify" })
+    .text(`· ${educacion.certificados_relevantes.join(" · ")}`, {
+      indent: 8,
+      align: "left",
+      lineGap: 0.5,
+    })
   doc.moveDown(0.6)
 
   if (doc.y > 720) {
@@ -202,7 +251,7 @@ function buildPDF(doc: PDFKit.PDFDocument, lang: Lang) {
   doc.moveDown(0.3)
   doc
     .font("Helvetica")
-    .fontSize(8)
+    .fontSize(8.5)
     .fillColor(gray)
-    .text(S.values.join("  ·  "), { align: "justify" })
+    .text(S.values.join("  ·  "), { align: "left", lineGap: 1 })
 }

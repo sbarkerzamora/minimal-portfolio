@@ -1,7 +1,7 @@
 {
   "perfil_profesional": {
     "nombre": "Stephan Barker",
-    "titulo_principal": "DESARROLLADOR FULL STACK & ASESOR DIGITAL",
+    "titulo_principal": "AI Engineer",
     "resumen_perfil": "Desarrollador Full Stack / React con más de 8 años de experiencia liderando productos digitales completos, desde estrategia y arquitectura técnica hasta desarrollo, despliegue, validación y lanzamiento. Experiencia práctica con React, Next.js, TypeScript, APIs REST, backend, apps móviles y plataformas SaaS/e-commerce.",
     "descripcion_hero": "Más de 8 años transformando ideas en productos digitales. Desarrolo plataformas web escalables con Next.js y Supabase, creo APIs seguras y construyo apps móviles con React Native. También trabajo con WordPress & WooCommerce cuando la situación lo requiere.",
     "filosofia_trabajo": "Creo en la simplicidad y la eficiencia. Cada proyecto que desarrollo busca resolver problemas reales con soluciones elegantes y escalables. Me apasiona encontrar el equilibrio perfecto entre la velocidad del desarrollo y la calidad del código.",
@@ -21,12 +21,39 @@
     ],
     "enlaces": {
       "github": "https://github.com/sbarkerzamora",
+      "github_preview": "/preview-github.webp",
       "portfolio": "https://stephanbarker.com",
       "cv": "/api/cv",
       "email": "sbarkerzamora@gmail.com"
     },
     "navegacion": [
       "Inicio"
+    ]
+  },
+  "hero_inicio": {
+    "seo": {
+      "titulo": "Stephan Barker | AI Engineer y Asesor Digital",
+      "descripcion": "Stephan Barker es AI Engineer y asesor digital. Supervisó equipos creativos y web en White Shark Media; creó Asistente Justo y pateperro.online."
+    },
+    "experiencia": "Supervisé equipos creativos y web en",
+    "empresa": {
+      "nombre": "White Shark Media",
+      "enlace": "https://whitesharkmedia.com",
+      "vista_previa": "/preview-white-shark.webp"
+    },
+    "actualidad": "Hoy trabajo como asesor digital y freelance con empresas corporativas.",
+    "proyectos_intro": "Proyectos recientes:",
+    "proyectos": [
+      {
+        "nombre": "Asistente Justo",
+        "enlace": "https://asistentejusto.com",
+        "vista_previa": "/preview-asistente-justo.webp"
+      },
+      {
+        "nombre": "pateperro.online",
+        "enlace": "https://pateperro.online",
+        "vista_previa": "/preview-pateperro.webp"
+      }
     ]
   },
   "hero_proyectos_recientes": [
@@ -124,7 +151,7 @@
       "rol": "Full Product Developer",
       "periodo": "2026",
       "empresa": "justo.stephanbarker.com",
-      "descripcion": "Lideré el desarrollo completo del producto y su lanzamiento, desde el concepto y la arquitectura técnica hasta la implementación, despliegue y salida al mercado.",
+      "descripcion": "Convertí el concepto de Justo en un asistente laboral inteligente: definí la arquitectura técnica, desarrollé el producto y lo desplegué para su lanzamiento al mercado.",
       "logros": [
         "Stack: Next.js, React, TypeScript, Redis, OpenAI API, Vercel."
       ]
@@ -133,7 +160,7 @@
       "rol": "Full Product Developer",
       "periodo": "2024 - 2025",
       "empresa": "pateperro.online",
-      "descripcion": "Lideré el desarrollo completo del producto y su lanzamiento, incluyendo diseño de API, arquitectura backend, desarrollo frontend, app Android y ejecución go-to-market.",
+      "descripcion": "Construí una plataforma de eventos con venta de entradas y validación de accesos. Diseñé la API y el backend, desarrollé el frontend y la app Android, y ejecuté su lanzamiento comercial.",
       "logros": [
         "Stack: Next.js, React, TypeScript, Supabase, React Native Expo, Stripe, Vercel."
       ]
@@ -142,7 +169,7 @@
       "rol": "Founder / Full Business Development",
       "periodo": "2021 - 2023",
       "empresa": "tumenudigital.app",
-      "descripcion": "Lideré el desarrollo completo del negocio y la ejecución del producto, desde el concepto y la estrategia hasta la entrega de la plataforma, validación con clientes y crecimiento.",
+      "descripcion": "Fundé Tu Menú Digital y desarrollé el negocio alrededor de una plataforma de gestión para restaurantes. Definí la estrategia, entregué el producto y trabajé en su validación con clientes y crecimiento.",
       "logros": [
         "Stack: Laravel, VPS, Cloudflare, WordPress, Brevo."
       ]
@@ -284,8 +311,29 @@
     ]
   },
   "en": {
-    "titulo_principal": "FULL STACK DEVELOPER & DIGITAL CONSULTANT",
+    "titulo_principal": "AI Engineer",
+    "hero_inicio": {
+      "seo": {
+        "titulo": "Stephan Barker | AI Engineer & Digital Advisor",
+        "descripcion": "Stephan Barker is an AI Engineer and digital advisor. Former Creative & Web supervisor at White Shark Media; creator of Asistente Justo and pateperro.online."
+      },
+      "experiencia": "I led creative and web teams at",
+      "actualidad": "Today I work as a digital advisor and freelancer with corporate clients.",
+      "proyectos_intro": "Recent projects:"
+    },
     "resumen_perfil": "Full Stack / React Developer with 8+ years of experience leading complete digital products, from strategy and technical architecture to development, deployment, validation, and launch. Hands-on experience with React, Next.js, TypeScript, REST APIs, backend, mobile apps, and SaaS/e-commerce platforms.",
+    "descripcion_hero": "Over 8 years turning ideas into digital products. I develop scalable web platforms with Next.js and Supabase, create secure APIs, and build mobile apps with React Native. I also work with WordPress & WooCommerce when the project calls for it.",
+    "filosofia_trabajo": "I believe in simplicity and efficiency. Every project I develop aims to solve real problems with elegant, scalable solutions. I enjoy finding the right balance between development speed and code quality.",
+    "enfoque": "I specialize in helping businesses move from static websites to modern, functional web applications. I work with both startups that need fast MVPs and established companies looking to modernize their digital infrastructure.",
+    "logros_destacados": [
+      "Developed Tu Menú Digital, a complete platform that helps restaurants digitize their operations",
+      "Created pateperro.online, an all-in-one event publishing and ticketing platform with mobile apps in development",
+      "Implemented integrated payment systems that process transactions securely and efficiently",
+      "Guided the digital transformation of multiple businesses, increasing their operational efficiency by over 40%"
+    ],
+    "navegacion": [
+      "Home"
+    ],
     "valores": [
       "Transparency at every project stage",
       "Clear and constant communication",
@@ -296,21 +344,21 @@
     "experiencia_laboral": [
       {
         "rol": "Full Product Developer",
-        "descripcion": "Led full product development and launch, from product concept and technical architecture to implementation, deployment, and market release.",
+        "descripcion": "Turned the concept behind Justo into an intelligent employment assistant: defined the technical architecture, developed the product, and deployed it for market launch.",
         "logros": [
           "Stack: Next.js, React, TypeScript, Redis, OpenAI API, Vercel."
         ]
       },
       {
         "rol": "Full Product Developer",
-        "descripcion": "Led full product development and launch, including API design, backend architecture, frontend development, Android app development, and go-to-market execution.",
+        "descripcion": "Built an event platform with ticket sales and access validation. Designed the API and backend, developed the frontend and Android app, and executed its commercial launch.",
         "logros": [
           "Stack: Next.js, React, TypeScript, Supabase, React Native Expo, Stripe, Vercel."
         ]
       },
       {
         "rol": "Founder / Full Business Development",
-        "descripcion": "Led full business development and product execution, from concept and strategy to platform delivery, customer validation, and growth.",
+        "descripcion": "Founded Tu Menú Digital and developed the business around a restaurant management platform. Defined the strategy, delivered the product, and worked on customer validation and growth.",
         "logros": [
           "Stack: Laravel, VPS, Cloudflare, WordPress, Brevo."
         ]
@@ -334,6 +382,100 @@
         "Practical Frontend Developer Course",
         "Frontend Developer Course"
       ]
+    },
+    "hero_proyectos_recientes": {
+      "Justo": "Your Intelligent Employment Assistant",
+      "Pateperro": "Android App",
+      "Tu Menú Digital": "All-in-one restaurant management platform",
+      "pateperro.online": "Backend/API + Frontend"
+    },
+    "stack_categorias": [
+      {
+        "nombre": "Web Apps",
+        "descripcion": "Modern, scalable web applications"
+      },
+      {
+        "nombre": "Backend / API",
+        "descripcion": "Servers, databases, and RESTful APIs"
+      },
+      {
+        "nombre": "Android Apps",
+        "descripcion": "Native mobile applications"
+      },
+      {
+        "nombre": "Digital Product Management",
+        "descripcion": "Payments, tools, and workflow"
+      }
+    ],
+    "proyectos_destacados": {
+      "pateperro.online": {
+        "categoria": "Event Platform",
+        "descripcion": "An all-in-one platform for managing events from start to finish. Create events, sell tickets online, and validate entry on event day. Includes an organizer dashboard and mobile apps (Android/iPhone) in development for ticket validation.",
+        "impacto": "An all-in-one event management platform with integrated ticketing and access validation."
+      },
+      "Proyectos Open Source / GitHub": {
+        "nombre": "Open Source Projects / GitHub",
+        "categoria": "Full Stack Development",
+        "descripcion": "A collection of repositories with authentication implementations, CRUD operations, and scalable architectures."
+      },
+      "Tu Menú Digital": {
+        "categoria": "Digital Product",
+        "descripcion": "A complete SaaS platform for restaurants to create interactive digital menus and manage online orders, table reservations, kitchen orders, and integrated payments. Built with Next.js, TypeScript, and Supabase.",
+        "impacto": "Over 200 restaurants across Latin America rely on the platform to digitize their operations."
+      },
+      "Polygon CRM": {
+        "categoria": "SaaS / CRM",
+        "descripcion": "A complete customer relationship management (CRM) platform with advanced automation, data analytics, and sales management features. Includes integrations with marketing tools and invoicing systems.",
+        "impacto": "Used by sales teams to streamline processes and increase conversions."
+      },
+      "Doctor Wise": {
+        "categoria": "Healthcare / App",
+        "descripcion": "A comprehensive healthcare platform connecting doctors and patients through appointment management, digital medical records, and secure communication. Includes reminders and availability management.",
+        "impacto": "Simplifies medical appointment management, improving the experience for both professionals and patients."
+      },
+      "Dra. Alma Sánchez": {
+        "categoria": "Healthcare / Personal Brand",
+        "descripcion": "A personal brand website for professional medical services."
+      },
+      "Hurtado Arquitectos": {
+        "categoria": "Portfolio / Architecture",
+        "descripcion": "A website portfolio for an architecture firm, showcasing visual projects with a minimalist design."
+      },
+      "Excello BPO": {
+        "categoria": "Corporate / BPO",
+        "descripcion": "A corporate website for a BPO company, showcasing outsourcing and contact center services."
+      },
+      "Interface Outsourcing": {
+        "categoria": "Corporate / Outsourcing",
+        "descripcion": "A website for an outsourcing company, focused on business solutions and attracting clients."
+      }
+    },
+    "servicios": {
+      "eyebrow": "SERVICES",
+      "titulo": "What I Do",
+      "descripcion": "I combine strategy, speed, and skill to deliver exceptional digital solutions, every time.",
+      "items": [
+        {
+          "titulo": "Full-Stack Development",
+          "descripcion": "Modern, scalable web applications with Next.js, TypeScript, and Supabase, from MVP to mature product.",
+          "tags": ["NEXT.JS", "TYPESCRIPT", "SUPABASE", "REACT", "RESTful APIs", "DOCKER"]
+        },
+        {
+          "titulo": "WordPress & WooCommerce",
+          "descripcion": "Fast, SEO-optimized websites that are easy to manage. Online stores ready to sell.",
+          "tags": ["WORDPRESS", "WOOCOMMERCE", "SEO", "PERFORMANCE", "CMS", "E-COMMERCE"]
+        },
+        {
+          "titulo": "Integrations & Payments",
+          "descripcion": "Connect your business with Stripe, PayPal, and external APIs. Automations that save time and money.",
+          "tags": ["STRIPE API", "PAYPAL", "WEBHOOKS", "AUTOMATION", "APIs", "ZAPIER"]
+        }
+      ]
+    },
+    "contacto": {
+      "call_to_action": "POWER UP YOUR PROJECT",
+      "subtitulo": "Need a complex integration or a modern app? Let's talk about how Next.js and solid infrastructure can help your business scale.",
+      "texto_boton": "LET'S TALK CODE"
     },
     "categoryLabels": {
       "frontend_moderno": "Modern Frontend",

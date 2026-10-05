@@ -1,4 +1,5 @@
 <!-- BEGIN:nextjs-agent-rules -->
+
 # This is NOT the Next.js you know
 
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
@@ -26,7 +27,7 @@ This project is Stephan Barker's personal portfolio. Treat the main website as a
 - Preserve shadcn theme tokens and global component styling unless explicitly requested.
 - Use Tailwind 4 composition classes for project-specific layout and visual treatment.
 - Use `@phosphor-icons/react` for icons.
-- Support light and dark themes.
-- Keep the visual system mostly black and white with restrained emerald accents, around 5-10% of the surface.
+- Keep light as the default theme and provide a minimal, persistent light/dark selector independent of system appearance.
+- Follow the current minimal home direction in `docs/plans/white-hero-redesign.md`: white in light mode, charcoal and warm white in dark mode, with restrained amber for contribution levels.
 - Prefer centered content, strong hierarchy, precise spacing, and subtle microinteractions.
 - Respect `prefers-reduced-motion` for all custom motion.

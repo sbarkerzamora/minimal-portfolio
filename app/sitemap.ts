@@ -1,14 +1,17 @@
 import type { MetadataRoute } from "next"
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://stephanbarker.com"
+import { HOME_URLS } from "@/lib/site"
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  return [
-    {
-      url: SITE_URL,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 1,
+  const alternates = {
+    languages: {
+      es: HOME_URLS.es,
+      en: HOME_URLS.en,
+      "x-default": HOME_URLS.es,
     },
+  }
+
+  return [
+    { url: HOME_URLS.es, alternates },
+    { url: HOME_URLS.en, alternates },
   ]
 }

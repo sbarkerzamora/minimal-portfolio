@@ -1,376 +1,422 @@
-"use client";
+"use client"
 
-import type React from "react";
-import { useMemo, useState } from "react";
+import {
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+} from "react"
+
+import { DecryptReveal } from "@/components/canvasui/DecryptReveal"
+import { cn } from "@/lib/utils"
 
 export interface ContributionData {
-  count: number;
-  date: string;
-  level: number;
+  count: number
+  date: string
+  level: number
 }
 
 export interface ContributionGraphProps {
-  className?: string;
-  data?: ContributionData[];
-  showLegend?: boolean;
-  showTooltips?: boolean;
-  year?: number;
+  className?: string
+  data?: ContributionData[]
+  locale?: "es" | "en"
+  showLegend?: boolean
+  showTooltips?: boolean
+  compact?: boolean
+  year?: number
 }
 
-const WEEKS_IN_YEAR = 53;
-const DAYS_IN_WEEK = 7;
-const JANUARY_MONTH = 0;
-const DECEMBER_MONTH = 11;
-const SUNDAY_DAY = 0;
-const MIN_WEEKS_FOR_DECEMBER_HEADER = 2;
-const TOOLTIP_OFFSET_X = 10;
-const TOOLTIP_OFFSET_Y = 40;
-
-const MONTHS = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
-
-const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-// Contribution level colors (similar to GitHub's)
-const CONTRIBUTION_COLORS = [
-  "bg-muted", // Level 0 - No contributions
-  "bg-emerald-500/25", // Level 1
-  "bg-emerald-500/50", // Level 2
-  "bg-emerald-500/75", // Level 3
-  "bg-emerald-500", // Level 4 - Max
-];
-
-const LEVEL_0 = 0;
-const LEVEL_1 = 1;
-const LEVEL_2 = 2;
-const LEVEL_3 = 3;
-const LEVEL_4 = 4;
-const CONTRIBUTION_LEVELS = [LEVEL_0, LEVEL_1, LEVEL_2, LEVEL_3, LEVEL_4];
-const DAY_1 = 1;
-const DAY_31 = 31;
-
-// Helper function to check if date is in valid range
-const isDateInValidRange = (
-  currentDate: Date,
-  startDate: Date,
-  endDate: Date,
-  targetYear: number
-) => {
-  const isInRange = currentDate >= startDate && currentDate <= endDate;
-  const isPreviousYearDecember =
-    currentDate.getFullYear() === targetYear - 1 &&
-    currentDate.getMonth() === DECEMBER_MONTH;
-  const isNextYearJanuary =
-    currentDate.getFullYear() === targetYear + 1 &&
-    currentDate.getMonth() === JANUARY_MONTH;
-  return isInRange || isPreviousYearDecember || isNextYearJanuary;
-};
-
-// Helper function to create day data
-const createDayData = (
-  currentDate: Date,
-  contributionData: ContributionData[]
-): ContributionData => {
-  const dateString = currentDate.toISOString().split("T")[0];
-  const existingData = contributionData.find((d) => d.date === dateString);
-  return {
-    date: dateString,
-    count: existingData?.count ?? LEVEL_0,
-    level: existingData?.level ?? LEVEL_0,
-  };
-};
-
-// Helper function to check if month should be shown
-interface MonthHeaderCheck {
-  currentMonth: number;
-  currentYear: number;
-  startDateDay: number;
-  targetYear: number;
-  weekCount: number;
+const EMPTY_DATA: ContributionData[] = []
+const DAY_MS = 86_400_000
+const DAYS = {
+  es: ["Dom", "Lun", "Mar", "Mi\u00e9", "Jue", "Vie", "S\u00e1b"],
+  en: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
 }
-const shouldShowMonthHeader = ({
-  currentYear,
-  targetYear,
-  currentMonth,
-  startDateDay,
-  weekCount,
-}: MonthHeaderCheck) =>
-  currentYear === targetYear ||
-  (currentYear === targetYear - 1 &&
-    currentMonth === DECEMBER_MONTH &&
-    startDateDay !== SUNDAY_DAY &&
-    weekCount >= MIN_WEEKS_FOR_DECEMBER_HEADER);
 
-// Helper function to calculate month headers
-const calculateMonthHeaders = (targetYear: number) => {
-  const headers: { month: string; colspan: number; startWeek: number }[] = [];
-  const startDate = new Date(targetYear, JANUARY_MONTH, DAY_1);
-  const firstSunday = new Date(startDate);
-  firstSunday.setDate(startDate.getDate() - startDate.getDay());
-
-  let currentMonth = -1;
-  let currentYear = -1;
-  let monthStartWeek = 0;
-  let weekCount = 0;
-
-  for (let weekNumber = 0; weekNumber < WEEKS_IN_YEAR; weekNumber++) {
-    const weekDate = new Date(firstSunday);
-    weekDate.setDate(firstSunday.getDate() + weekNumber * DAYS_IN_WEEK);
-
-    const monthKey = weekDate.getMonth();
-    const yearKey = weekDate.getFullYear();
-
-    if (monthKey !== currentMonth || yearKey !== currentYear) {
-      if (
-        currentMonth !== -1 &&
-        shouldShowMonthHeader({
-          currentYear,
-          targetYear,
-          currentMonth,
-          startDateDay: startDate.getDay(),
-          weekCount,
-        })
-      ) {
-        headers.push({
-          month: MONTHS[currentMonth],
-          colspan: weekCount,
-          startWeek: monthStartWeek,
-        });
-      }
-      currentMonth = monthKey;
-      currentYear = yearKey;
-      monthStartWeek = weekNumber;
-      weekCount = 1;
-    } else {
-      weekCount++;
-    }
-  }
-
-  // Add the last month
-  if (
-    currentMonth !== -1 &&
-    shouldShowMonthHeader({
-      currentYear,
-      targetYear,
-      currentMonth,
-      startDateDay: startDate.getDay(),
-      weekCount,
-    })
-  ) {
-    headers.push({
-      month: MONTHS[currentMonth],
-      colspan: weekCount,
-      startWeek: monthStartWeek,
-    });
-  }
-
-  return headers;
-};
+// Chart tokens run from the brightest amber (1) to the quietest level (5).
+const LEVEL_COLORS = [
+  "bg-chart-5",
+  "bg-chart-4",
+  "bg-chart-3",
+  "bg-chart-2",
+  "bg-chart-1",
+]
 
 export function ContributionGraph({
-  data = [],
+  data = EMPTY_DATA,
+  locale = "es",
   year = new Date().getFullYear(),
-  className = "",
+  className,
   showLegend = true,
   showTooltips = true,
+  compact = false,
 }: ContributionGraphProps) {
-  const [hoveredDay, setHoveredDay] = useState<ContributionData | null>(null);
-  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+  const id = useId()
+  const [isDarkTheme, setIsDarkTheme] = useState(false)
+  const cellsRef = useRef<(HTMLButtonElement | null)[]>([])
+  const [selectedDate, setSelectedDate] = useState("")
+  const [previewDate, setPreviewDate] = useState("")
 
-  // Generate all days for the year
-  const yearData = useMemo(() => {
-    const startDate = new Date(year, JANUARY_MONTH, DAY_1);
-    const endDate = new Date(year, DECEMBER_MONTH, DAY_31);
-    const days: ContributionData[] = [];
+  useEffect(() => {
+    const root = document.documentElement
+    const syncTheme = () => setIsDarkTheme(root.classList.contains("dark"))
+    syncTheme()
+    const observer = new MutationObserver(syncTheme)
+    observer.observe(root, { attributes: true, attributeFilter: ["class"] })
+    return () => observer.disconnect()
+  }, [])
+  const language = locale === "es" ? "es-NI" : "en-US"
+  const dateFormatter = new Intl.DateTimeFormat(language, {
+    timeZone: "UTC",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  })
+  const monthFormatter = new Intl.DateTimeFormat(language, {
+    timeZone: "UTC",
+    month: "short",
+  })
+  const numberFormatter = new Intl.NumberFormat(language)
 
-    // Start from the Sunday of the first week that contains January 1st
-    // This ensures December gets proper weeks before January
-    const firstSunday = new Date(startDate);
-    firstSunday.setDate(startDate.getDate() - startDate.getDay());
-
-    // Generate 53 weeks (GitHub shows 53 weeks)
-    for (let weekNum = 0; weekNum < WEEKS_IN_YEAR; weekNum++) {
-      for (let day = 0; day < DAYS_IN_WEEK; day++) {
-        const currentDate = new Date(firstSunday);
-        currentDate.setDate(
-          firstSunday.getDate() + weekNum * DAYS_IN_WEEK + day
-        );
-
-        if (isDateInValidRange(currentDate, startDate, endDate, year)) {
-          days.push(createDayData(currentDate, data));
-        } else {
-          // Add empty day for alignment
-          days.push({
-            date: "",
-            count: LEVEL_0,
-            level: LEVEL_0,
-          });
-        }
+  const calendar = useMemo(() => {
+    const start = Date.UTC(year, 0, 1)
+    const offset = new Date(start).getUTCDay()
+    const dayCount = (Date.UTC(year + 1, 0, 1) - start) / DAY_MS
+    const byDate = new Map(data.map((day) => [day.date, day]))
+    const days = Array.from({ length: dayCount }, (_, index) => {
+      const date = new Date(start + index * DAY_MS).toISOString().slice(0, 10)
+      const entry = byDate.get(date)
+      return {
+        date,
+        count: entry ? Math.max(0, entry.count) : null,
+        level: entry ? Math.max(0, Math.min(4, Math.round(entry.level))) : 0,
+      }
+    })
+    // Some leap years need 54 columns. UTC avoids shifting dates by visitor timezone.
+    const weekCount = Math.ceil((dayCount + offset) / 7)
+    const months: { date: Date; startWeek: number; span: number }[] = []
+    for (let week = 0; week < weekCount; week++) {
+      const date = new Date(start + Math.max(0, week * 7 - offset) * DAY_MS)
+      const previous = months.at(-1)
+      if (previous?.date.getUTCMonth() === date.getUTCMonth()) {
+        previous.span++
+      } else {
+        months.push({ date, startWeek: week, span: 1 })
       }
     }
+    return { days, months, offset, weekCount }
+  }, [data, year])
 
-    return days;
-  }, [data, year]);
+  const selectedIndex = Math.max(
+    0,
+    calendar.days.findIndex((day) => day.date === selectedDate)
+  )
+  const selectedDay = calendar.days[selectedIndex]
+  const detailDay =
+    (showTooltips && calendar.days.find((day) => day.date === previewDate)) ||
+    selectedDay
+  const title =
+    locale === "es" ? `Contribuciones de ${year}` : `Contributions for ${year}`
 
-  // Calculate month headers with colspan
-  const monthHeaders = useMemo(() => calculateMonthHeaders(year), [year]);
+  function countText(count: number | null) {
+    if (count === null)
+      return locale === "es"
+        ? "Sin datos para esta fecha"
+        : "No data for this date"
+    if (count === 0)
+      return locale === "es" ? "Sin contribuciones" : "No contributions"
+    if (count === 1)
+      return locale === "es" ? "1 contribuci\u00f3n" : "1 contribution"
+    return `${numberFormatter.format(count)} ${locale === "es" ? "contribuciones" : "contributions"}`
+  }
 
-  const handleDayHover = (day: ContributionData, event: React.MouseEvent) => {
-    if (showTooltips && day.date) {
-      setHoveredDay(day);
-      setTooltipPosition({ x: event.clientX, y: event.clientY });
+  function navigate(event: KeyboardEvent<HTMLButtonElement>, index: number) {
+    if (event.altKey || event.metaKey) return
+    let next = index
+    const weekStart =
+      Math.floor((index + calendar.offset) / 7) * 7 - calendar.offset
+    switch (event.key) {
+      case "ArrowLeft":
+        next -= 7
+        break
+      case "ArrowRight":
+        next += 7
+        break
+      case "ArrowUp":
+        next -= 1
+        break
+      case "ArrowDown":
+        next += 1
+        break
+      case "Home":
+        next = event.ctrlKey ? 0 : weekStart
+        break
+      case "End":
+        next = event.ctrlKey ? calendar.days.length - 1 : weekStart + 6
+        break
+      default:
+        return
     }
-  };
+    event.preventDefault()
+    next = Math.max(0, Math.min(calendar.days.length - 1, next))
+    cellsRef.current[next]?.focus({ preventScroll: true })
+    cellsRef.current[next]?.scrollIntoView({
+      block: "nearest",
+      inline: "nearest",
+      behavior: "instant",
+    })
+  }
 
-  const handleDayLeave = () => {
-    setHoveredDay(null);
-  };
-
-  const formatDate = (dateString: string) => {
-    if (!dateString) {
-      return "";
-    }
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
-
-  const getContributionText = (count: number) => {
-    if (count === LEVEL_0) {
-      return "No contributions";
-    }
-    if (count === LEVEL_1) {
-      return "1 contribution";
-    }
-    return `${count} contributions`;
-  };
+  if (!calendar.days.some((day) => day.count !== null)) {
+    return (
+      <div
+        className={cn(
+          "flex items-center justify-center p-6 text-sm text-muted-foreground",
+          compact ? "min-h-24" : "min-h-[28rem] sm:min-h-96",
+          className
+        )}
+      >
+        <p role="status">
+          {locale === "es"
+            ? "No hay datos disponibles para este a\u00f1o."
+            : "No data is available for this year."}
+        </p>
+      </div>
+    )
+  }
 
   return (
-    <div className={`contribution-graph ${className}`}>
-      <div className="overflow-x-auto">
-        <table className="border-separate border-spacing-1 sm:border-spacing-[3px] text-xs">
-          <caption className="sr-only">Contribution Graph for {year}</caption>
-
-          {/* Month Headers */}
-          <thead>
-            <tr className="h-3 sm:h-4">
-              <td className="w-7 min-w-7 sm:w-10 sm:min-w-10" />
-              {monthHeaders.map((header) => (
-                <td
-                  className="relative text-left text-foreground"
-                  colSpan={header.colspan}
-                  key={`${header.month}-${header.startWeek}`}
-                >
-                  <span className="absolute top-0 left-1">{header.month}</span>
-                </td>
-              ))}
-            </tr>
-          </thead>
-
-          {/* Day Grid */}
-          <tbody>
-            {Array.from({ length: DAYS_IN_WEEK }, (_, dayIndex) => (
-              <tr className="h-2.5 sm:h-3.5" key={DAYS[dayIndex]}>
-                {/* Day Labels */}
-                <td className="relative w-7 min-w-7 text-muted-foreground sm:w-10 sm:min-w-10">
-                  {dayIndex % 2 === 0 && (
-                    <span className="absolute -bottom-0.5 left-0 text-xs">
-                      {DAYS[dayIndex]}
-                    </span>
-                  )}
-                </td>
-
-                {/* Day Cells */}
-                {Array.from({ length: WEEKS_IN_YEAR }, (_, w) => {
-                  const dayData = yearData[w * DAYS_IN_WEEK + dayIndex];
-                  const cellKey = `${dayData?.date ?? "empty"}-${w}-${dayIndex}`;
-                  if (!dayData?.date) {
-                    return (
-                      <td className="h-2.5 w-2.5 p-0 sm:h-3.5 sm:w-3.5" key={cellKey}>
-                        <div className="h-2.5 w-2.5 sm:h-3.5 sm:w-3.5" />
-                      </td>
-                    );
-                  }
-
-                  return (
-                    // biome-ignore lint/a11y/noNoninteractiveElementInteractions: Table cell is interactive for hover tooltips
-                    <td
-                      className="h-2.5 w-2.5 cursor-pointer p-0 sm:h-3.5 sm:w-3.5"
-                      key={cellKey}
-                      onMouseEnter={(e) => handleDayHover(dayData, e)}
-                      onMouseLeave={handleDayLeave}
-                      title={
-                        showTooltips
-                          ? `${formatDate(dayData.date)}: ${getContributionText(dayData.count)}`
-                          : undefined
-                      }
-                    >
-                      <div
-                        className={`h-2.5 w-2.5 rounded-sm sm:h-3.5 sm:w-3.5 ${
-                          CONTRIBUTION_COLORS[dayData.level]
-                        } hover:ring-2 hover:ring-background`}
-                      />
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Tooltip */}
-      {showTooltips && hoveredDay && (
-        <div
-          aria-live="polite"
-          className="pointer-events-none fixed z-50 animate-[tooltip-in_0.2s_ease-out_both] rounded-lg border bg-popover px-3 py-2 text-popover-foreground text-sm shadow-lg motion-reduce:animate-none"
-          style={{
-            left: tooltipPosition.x + TOOLTIP_OFFSET_X,
-            top: tooltipPosition.y - TOOLTIP_OFFSET_Y,
-          }}
+    <div
+      lang={locale}
+      className={cn(
+        "flex min-w-0 flex-col gap-4 font-sans",
+        compact ? "gap-2" : "min-h-[28rem] sm:min-h-96",
+        className
+      )}
+    >
+      {!compact && (
+        <p
+          id={`${id}-help`}
+          className="text-sm leading-5 text-muted-foreground"
         >
-          <div className="font-semibold">
-            {getContributionText(hoveredDay.count)}
-          </div>
-          <div className="text-muted-foreground">
-            {formatDate(hoveredDay.date)}
-          </div>
-        </div>
+          {locale === "es"
+            ? "Desplaza para ver el a\u00f1o. Usa las flechas o consulta una fecha."
+            : "Scroll to see the year. Use arrow keys or look up a date."}
+        </p>
       )}
-
-      {/* Legend */}
+      <DecryptReveal
+        className={cn("relative w-full", compact ? "h-32" : "min-h-40")}
+        radius={compact ? 132 : 240}
+        cell={9}
+        color={isDarkTheme ? "#efb654" : "#9a6306"}
+        background={isDarkTheme ? "#0c0e10" : "#ffffff"}
+        scramble={0.08}
+        scrambleSpeed={3}
+        edgeWidth={0.16}
+        edgeFlicker={0.7}
+        edgeGlow={1.4}
+        edgeTint={0.55}
+        aberration={3}
+        legibility={0.9}
+        passthrough={0.24}
+      >
+        <div
+          role="region"
+          aria-label={
+            locale === "es"
+              ? "Calendario con desplazamiento horizontal"
+              : "Horizontally scrollable calendar"
+          }
+          className="min-w-0 [scrollbar-width:thin] overflow-x-auto overscroll-x-contain pb-2 scheme-light dark:scheme-dark"
+        >
+          <table
+            role="grid"
+            aria-label={title}
+            aria-describedby={!compact ? `${id}-help` : undefined}
+            className={cn(
+              "w-full table-fixed border-separate text-xs",
+              compact
+                ? "min-w-0 border-spacing-0.5"
+                : "min-w-[69rem] border-spacing-1"
+            )}
+          >
+            <thead>
+              <tr>
+                <td className={compact ? "w-6" : "w-10"} />
+                {calendar.months.map((month) => (
+                  <th
+                    key={month.startWeek}
+                    scope="colgroup"
+                    colSpan={month.span}
+                    className={cn(
+                      "p-0 text-left font-mono font-normal text-muted-foreground",
+                      compact ? "h-4 text-[9px]" : "h-6"
+                    )}
+                  >
+                    {monthFormatter.format(month.date)}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {DAYS[locale].map((label, weekday) => (
+                <tr key={weekday}>
+                  <th
+                    scope="row"
+                    className={cn(
+                      "p-0 text-left font-mono font-normal text-muted-foreground",
+                      compact ? "w-6 text-[8px]" : "w-10"
+                    )}
+                  >
+                    <span className={weekday % 2 === 0 ? undefined : "sr-only"}>
+                      {label}
+                    </span>
+                  </th>
+                  {Array.from({ length: calendar.weekCount }, (_, week) => {
+                    const index = week * 7 + weekday - calendar.offset
+                    const day = calendar.days[index]
+                    if (!day)
+                      return (
+                        <td
+                          key={week}
+                          className={cn("p-0", compact ? "h-2" : "h-4")}
+                        />
+                      )
+                    return (
+                      <td
+                        key={week}
+                        className={cn("p-0", compact ? "h-2" : "h-4")}
+                      >
+                        <button
+                          ref={(cell) => {
+                            cellsRef.current[index] = cell
+                          }}
+                          type="button"
+                          tabIndex={index === selectedIndex ? 0 : -1}
+                          aria-label={`${dateFormatter.format(new Date(`${day.date}T00:00:00Z`))}: ${countText(day.count)}`}
+                          aria-pressed={index === selectedIndex}
+                          className={cn(
+                            "block w-full rounded-[3px] outline-offset-2 hover:outline-2 hover:outline-ring focus-visible:outline-2 focus-visible:outline-ring",
+                            compact
+                              ? "h-2 min-w-0 rounded-[1px]"
+                              : "h-4 min-w-4",
+                            day.count === null
+                              ? "border border-dashed border-input bg-background"
+                              : LEVEL_COLORS[day.level],
+                            index === selectedIndex &&
+                              (compact
+                                ? "ring-1 ring-foreground ring-offset-1 ring-offset-background"
+                                : "ring-1 ring-foreground ring-offset-1 ring-offset-card")
+                          )}
+                          onFocus={() => {
+                            setSelectedDate(day.date)
+                            setPreviewDate("")
+                          }}
+                          onClick={() => setSelectedDate(day.date)}
+                          onKeyDown={(event) => navigate(event, index)}
+                          onMouseEnter={() => {
+                            if (showTooltips) setPreviewDate(day.date)
+                          }}
+                          onMouseLeave={() => setPreviewDate("")}
+                        />
+                      </td>
+                    )
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </DecryptReveal>
       {showLegend && (
-        <div className="mt-4 flex items-center justify-between text-muted-foreground text-xs">
-          <span>Less</span>
-          <div className="flex items-center gap-1">
-            {CONTRIBUTION_LEVELS.map((level) => (
-              <div
-                className={`h-3 w-3 rounded-sm ${CONTRIBUTION_COLORS[level]}`}
-                key={level}
-              />
+        <div
+          className="flex items-center justify-end gap-2 text-xs text-muted-foreground"
+          aria-label={
+            locale === "es"
+              ? "Intensidad de contribuciones, de menor a mayor"
+              : "Contribution intensity, from lower to higher"
+          }
+        >
+          <span>{locale === "es" ? "Menos" : "Less"}</span>
+          <span className="flex gap-1" aria-hidden="true">
+            {LEVEL_COLORS.map((color) => (
+              <span key={color} className={cn("size-4 rounded-[3px]", color)} />
             ))}
-          </div>
-          <span>More</span>
+          </span>
+          <span>{locale === "es" ? "M\u00e1s" : "More"}</span>
         </div>
       )}
+      <div
+        className={cn(
+          "flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-6",
+          compact ? "text-xs" : "mt-auto border-t border-border pt-4"
+        )}
+      >
+        {compact ? (
+          <div
+            role="status"
+            aria-atomic="true"
+            className="text-xs text-muted-foreground"
+          >
+            <p className="font-medium text-foreground">
+              {countText(detailDay.count)}
+            </p>
+            <p>
+              {dateFormatter.format(new Date(`${detailDay.date}T00:00:00Z`))}
+            </p>
+          </div>
+        ) : (
+          <>
+            <div className="flex shrink-0 flex-col gap-2">
+              <label
+                htmlFor={`${id}-date`}
+                className="text-sm text-muted-foreground"
+              >
+                {locale === "es" ? "Consultar fecha" : "Look up a date"}
+              </label>
+              {/* The full-size date control provides the same details without targeting tiny cells. */}
+              <input
+                id={`${id}-date`}
+                type="date"
+                min={calendar.days[0].date}
+                max={calendar.days.at(-1)!.date}
+                value={selectedDay.date}
+                className="min-h-11 min-w-44 rounded-lg border border-input bg-background px-3 font-sans text-sm text-foreground scheme-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring dark:scheme-dark"
+                onChange={(event) => {
+                  const date = event.currentTarget.value
+                  if (!calendar.days.some((day) => day.date === date)) return
+                  setSelectedDate(date)
+                  setPreviewDate("")
+                  const index = calendar.days.findIndex(
+                    (day) => day.date === date
+                  )
+                  cellsRef.current[index]?.scrollIntoView({
+                    block: "nearest",
+                    inline: "nearest",
+                    behavior: "instant",
+                  })
+                }}
+              />
+            </div>
+            <div
+              role="status"
+              aria-atomic="true"
+              className="flex min-h-12 flex-col gap-1 text-sm sm:text-right"
+            >
+              <p className="font-medium text-foreground">
+                {countText(detailDay.count)}
+              </p>
+              <p className="text-muted-foreground">
+                {dateFormatter.format(new Date(`${detailDay.date}T00:00:00Z`))}
+              </p>
+            </div>
+          </>
+        )}
+      </div>
     </div>
-  );
+  )
 }
 
-export default ContributionGraph;
+export default ContributionGraph
