@@ -43,6 +43,17 @@
     },
     "actualidad": "Hoy trabajo como asesor digital y freelance con empresas corporativas.",
     "proyectos_intro": "Proyectos recientes:",
+    "contacto": {
+      "boton": "Contactar",
+      "titulo": "Hablemos de tu proyecto",
+      "descripcion": "Reserva una conversación de 30 minutos en Cal.com.",
+      "cerrar": "Cerrar",
+      "directo": "Reservar en Cal.com",
+      "cargando": "Cargando horarios disponibles...",
+      "listo": "Selecciona un horario en el calendario.",
+      "fallo": "No se pudo cargar el calendario. Puedes reservar directamente en Cal.com.",
+      "espera": "La carga está tardando. Puedes reservar directamente en Cal.com."
+    },
     "proyectos": [
       {
         "nombre": "Asistente Justo",
@@ -319,7 +330,18 @@
       },
       "experiencia": "I led creative and web teams at",
       "actualidad": "Today I work as a digital advisor and freelancer with corporate clients.",
-      "proyectos_intro": "Recent projects:"
+      "proyectos_intro": "Recent projects:",
+      "contacto": {
+        "boton": "Contact",
+        "titulo": "Let's talk about your project",
+        "descripcion": "Book a 30-minute conversation on Cal.com.",
+        "cerrar": "Close",
+        "directo": "Book on Cal.com",
+        "cargando": "Loading available meeting times...",
+        "listo": "Choose a time in the calendar.",
+        "fallo": "The calendar could not load. You can book directly on Cal.com.",
+        "espera": "The calendar is taking longer than expected. You can book directly on Cal.com."
+      }
     },
     "resumen_perfil": "Full Stack / React Developer with 8+ years of experience leading complete digital products, from strategy and technical architecture to development, deployment, validation, and launch. Hands-on experience with React, Next.js, TypeScript, REST APIs, backend, mobile apps, and SaaS/e-commerce platforms.",
     "descripcion_hero": "Over 8 years turning ideas into digital products. I develop scalable web platforms with Next.js and Supabase, create secure APIs, and build mobile apps with React Native. I also work with WordPress & WooCommerce when the project calls for it.",

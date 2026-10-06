@@ -1192,6 +1192,7 @@ export function createDecryptReveal(
 export interface DecryptRevealProps extends DecryptRevealOptions {
   children: ReactNode
   className?: string
+  enabled?: boolean
   style?: React.CSSProperties
 }
 
@@ -1200,6 +1201,7 @@ const emptySubscribe = () => () => {}
 export function DecryptReveal({
   children,
   className,
+  enabled = true,
   style,
   ...options
 }: DecryptRevealProps) {
@@ -1217,6 +1219,7 @@ export function DecryptReveal({
     () => false
   )
   const native = supported && !failed
+  const effectEnabled = enabled && native
   const charset = options.charset ?? DEFAULTS.charset
   const fallbackCipher = Array.from({ length: 14 }, (_, row) =>
     Array.from({ length: 88 }, (_, column) => {
@@ -1226,7 +1229,7 @@ export function DecryptReveal({
   ).join("\n")
 
   function moveFallbackReveal(event: ReactPointerEvent<HTMLDivElement>) {
-    if (native) return
+    if (effectEnabled) return
     const overlay = fallbackRef.current
     if (!overlay) return
     const bounds = event.currentTarget.getBoundingClientRect()
@@ -1248,7 +1251,7 @@ export function DecryptReveal({
   }
 
   useEffect(() => {
-    if (!native) return
+    if (!effectEnabled) return
     const source = sourceRef.current
     const content = contentRef.current
     const output = outputRef.current
@@ -1262,7 +1265,7 @@ export function DecryptReveal({
       instanceRef.current?.destroy()
       instanceRef.current = null
     }
-  }, [initialOptions, native])
+  }, [effectEnabled, initialOptions])
 
   useEffect(() => {
     instanceRef.current?.setOptions(options)
@@ -1272,8 +1275,8 @@ export function DecryptReveal({
     <div
       className={className}
       style={{ position: "relative", ...style }}
-      onPointerMove={moveFallbackReveal}
-      onPointerLeave={resetFallbackReveal}
+      onPointerMove={enabled ? moveFallbackReveal : undefined}
+      onPointerLeave={enabled ? resetFallbackReveal : undefined}
     >
       <canvas
         ref={sourceRef}
@@ -1281,12 +1284,12 @@ export function DecryptReveal({
         layoutsubtree="true"
         suppressHydrationWarning
         style={
-          native
+          effectEnabled
             ? { position: "absolute", inset: 0, width: "100%", height: "100%" }
             : { display: "none" }
         }
       >
-        {native ? (
+        {effectEnabled ? (
           <div
             ref={contentRef}
             style={{
@@ -1300,7 +1303,7 @@ export function DecryptReveal({
           </div>
         ) : null}
       </canvas>
-      {!native ? (
+      {!effectEnabled ? (
         <div
           ref={contentRef}
           style={{
@@ -1322,9 +1325,10 @@ export function DecryptReveal({
           width: "100%",
           height: "100%",
           pointerEvents: "none",
+          display: enabled ? undefined : "none",
         }}
       />
-      {!native && (
+      {enabled && !effectEnabled && (
         <div
           ref={fallbackRef}
           aria-hidden="true"

@@ -12,6 +12,9 @@ Presentar a Stephan Barker en una sola pantalla como **AI Engineer**, con una tr
 - El hero ocupa todo el ancho y al menos toda la altura visible. En pantallas bajas, zoom o texto ampliado, el contenido determina la altura y se puede desplazar sin recortes.
 - Tema claro predeterminado y alternativa oscura carbón/ámbar, ambas independientes de la apariencia del sistema. El selector guarda la preferencia localmente.
 - Selectores de tema e idioma compactos en la esquina superior. ES usa `/` y EN usa `/en`, con URLs estables e independientes de cookies; el perfil y las etiquetas del gráfico se traducen.
+- Un botón de contacto al final del hero abre un drawer lateral en escritorio e inferior en móvil. El formulario inline de Cal.com se carga al abrirlo, conserva estados de carga/error y siempre ofrece el enlace directo a la reserva.
+- El iframe de Cal.com usa la altura visible del calendario para desplazarse dentro de él. En pantallas bajas, solo el cuerpo del drawer puede desplazarse; el contenedor exterior permanece fijo y mantiene el encabezado y las acciones visibles.
+- El calendario de contribuciones permanece estático en móviles; el efecto Decrypt Reveal se reserva para dispositivos con puntero preciso.
 - El contenido principal y los controles siguen legibles con JavaScript desactivado; el cambio de preferencias es progresivo.
 
 ## Contenido y conservación

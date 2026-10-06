@@ -10,7 +10,7 @@ Founders, small business owners, product teams, and technical collaborators eval
 
 ## Product Purpose
 
-Present Stephan Barker as an AI Engineer and digital advisor. The homepage should quickly communicate his White Shark Media experience, current advisory/freelance work, and recent projects through a precise, text-led interface. Project links and GitHub activity provide supporting proof.
+Present Stephan Barker as an AI Engineer and digital advisor. The homepage should quickly communicate his White Shark Media experience, current advisory/freelance work, and recent projects through a precise, text-led interface. The primary action opens a Cal.com booking drawer; project links and GitHub activity provide supporting proof.
 
 ## Brand Personality
 

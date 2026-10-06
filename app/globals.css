@@ -245,6 +245,24 @@
     animation-delay: var(--hero-delay, 0ms);
   }
 
+  .contact-cal-container > cal-inline {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .contact-cal-container iframe.cal-embed {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+    overflow-y: auto !important;
+  }
+
   .booking-dialog[open] {
     animation: booking-dialog-in 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }

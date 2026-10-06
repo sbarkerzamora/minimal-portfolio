@@ -68,7 +68,7 @@ Keep resource paths editable from the profile where practical. Several project/s
 
 The site defaults to light. The sun/moon selector saves a manual light/dark choice independently of system appearance. ES/EN links to `/` and `/en`, respectively; the language, visible content, and metadata follow the URL with or without JavaScript. Previously saved `portfolio_locale` cookies no longer determine the homepage language. The downloaded CV remains bilingual.
 
-The archived full portfolio retains its Cal.com booking implementation for use if that experience is restored.
+The contact button at the bottom of the homepage opens a SmoothUI drawer (right on desktop, bottom on mobile) containing the existing Cal.com 30-minute booking flow. The embed loads on demand, reports loading/ready/error states, and always includes a direct Cal.com link. Without JavaScript, the contact control becomes a direct link. The archived full portfolio retains its separate booking dialog for use if restored.
 
 ## GitHub Activity
 

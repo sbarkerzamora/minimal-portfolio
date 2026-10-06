@@ -6,6 +6,7 @@ import {
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
   type KeyboardEvent,
 } from "react"
 
@@ -30,6 +31,7 @@ export interface ContributionGraphProps {
 
 const EMPTY_DATA: ContributionData[] = []
 const DAY_MS = 86_400_000
+const MOBILE_QUERY = "(max-width: 639px)"
 const DAYS = {
   es: ["Dom", "Lun", "Mar", "Mi\u00e9", "Jue", "Vie", "S\u00e1b"],
   en: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
@@ -44,6 +46,20 @@ const LEVEL_COLORS = [
   "bg-chart-1",
 ]
 
+function subscribeToViewport(onChange: () => void) {
+  const media = window.matchMedia(MOBILE_QUERY)
+  media.addEventListener("change", onChange)
+  return () => media.removeEventListener("change", onChange)
+}
+
+function isMobileViewport() {
+  return window.matchMedia(MOBILE_QUERY).matches
+}
+
+function serverViewport() {
+  return false
+}
+
 export function ContributionGraph({
   data = EMPTY_DATA,
   locale = "es",
@@ -54,6 +70,11 @@ export function ContributionGraph({
   compact = false,
 }: ContributionGraphProps) {
   const id = useId()
+  const isMobile = useSyncExternalStore(
+    subscribeToViewport,
+    isMobileViewport,
+    serverViewport
+  )
   const [isDarkTheme, setIsDarkTheme] = useState(false)
   const cellsRef = useRef<(HTMLButtonElement | null)[]>([])
   const [selectedDate, setSelectedDate] = useState("")
@@ -207,6 +228,7 @@ export function ContributionGraph({
         </p>
       )}
       <DecryptReveal
+        enabled={!isMobile}
         className={cn("relative w-full", compact ? "h-32" : "min-h-40")}
         radius={compact ? 132 : 240}
         cell={9}

@@ -1,5 +1,6 @@
 import Image from "next/image"
 import type { CSSProperties } from "react"
+import { ContactDrawer } from "@/components/portfolio/contact-drawer"
 import { GitHubActivity } from "@/components/portfolio/github-activity"
 import { LanguageSelector } from "@/components/portfolio/language-selector"
 import { PreviewExternalLink } from "@/components/portfolio/preview-external-link"
@@ -7,6 +8,7 @@ import { ThemeToggle } from "@/components/portfolio/theme-toggle"
 import type { Locale } from "@/lib/portfolio-copy"
 import { getPortfolioProfile } from "@/lib/profile"
 import { HOME_URLS, SITE_URL } from "@/lib/site"
+import { BOOKING_URL } from "@/lib/cal-embed"
 
 export function HomePage({ locale }: { locale: Locale }) {
   const portfolioProfile = getPortfolioProfile(locale)
@@ -136,6 +138,23 @@ export function HomePage({ locale }: { locale: Locale }) {
             style={{ "--hero-delay": "450ms" } as CSSProperties}
           >
             <GitHubActivity locale={locale} compact />
+          </div>
+          <div
+            className="hero-reveal mt-8"
+            style={{ "--hero-delay": "540ms" } as CSSProperties}
+          >
+            <div className="contact-drawer-trigger">
+              <ContactDrawer locale={locale} copy={homeHero.contacto} />
+            </div>
+            <noscript>
+              <style>{`.contact-drawer-trigger{display:none!important}`}</style>
+              <a
+                href={BOOKING_URL}
+                className="inline-flex min-h-11 items-center text-sm font-medium underline underline-offset-4"
+              >
+                {homeHero.contacto.directo}
+              </a>
+            </noscript>
           </div>
         </div>
       </main>
